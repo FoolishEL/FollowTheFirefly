@@ -16,6 +16,7 @@ public class MapGenerator : MonoBehaviour
 
     private List<Vector2Int> corePoint;
     private List<Vector2Int> mainRoad;
+    private List<Vector2Int> playerRoad;
 
     private int[,] map;
     private int[,] connectionMap;
@@ -79,10 +80,43 @@ public class MapGenerator : MonoBehaviour
 
         PrepareMapping();
         GeneratePath();
+        ConnectPlayer();
+    }
+
+    private void ConnectPlayer()
+    {
+        if (mainRoad.Contains(playerPosition))
+        {
+            Debug.LogError("Player is on main road!");
+            return;
+        }
+        int maxLength = -1;
+        playerRoad = null;
+        foreach (var point in corePoint)
+        {
+            var path = GetPath(playerPosition, point);
+            if (path != null && path.Count != 0)
+            {
+                if (maxLength < path.Count)
+                {
+                    maxLength = path.Count;
+                    playerRoad = path;
+                }
+            }
+        }
+        if (maxLength != -1)
+        {
+            foreach (var road in playerRoad)
+            {
+                map[road.x, road.y] = MapGeneratorConstants.ROAD_ID;
+            }
+        }
+        Debug.LogError(maxLength != -1);
     }
 
     private void PrepareMapping()
     {
+        //cant reach anything
         for (int i = 0; i < mappingSize; i++)
         {
             for (int j = 0; j < size.x * size.y; j++)
@@ -90,7 +124,8 @@ public class MapGenerator : MonoBehaviour
                 connectionMap[i, j] = Int32.MaxValue / 3;
             }
         }
-
+        
+        //can reach adjecent tilesl
         for (int i = 0; i < mappingSize; i++)
         {
             var position = GetPositionById(i);
@@ -183,6 +218,88 @@ public class MapGenerator : MonoBehaviour
                 map[item.x, item.y] = MapGeneratorConstants.CORE_PATH_ID;
             }
         }
+        PrepareMapping();
+        for (int i = 0; i < mainRoad.Count - 1; i++)
+        {
+            if(mainRoad[i].Equals(startPosition)||corePoint.Any(c=>c.Equals(mainRoad[i])))
+                continue;
+            if (mainRoad[i].x + 1 < size.x)
+            {
+                connectionMap[i, GetIdByPosition(mainRoad[i].x + 1, mainRoad[i].y)] = int.MaxValue / 3;
+            }
+
+            if (mainRoad[i].x - 1 >= 0)
+            {
+                connectionMap[i, GetIdByPosition(mainRoad[i].x - 1, mainRoad[i].y)] = int.MaxValue / 3;
+            }
+
+            if (mainRoad[i].y + 1 < size.y)
+            {
+                connectionMap[i, GetIdByPosition(mainRoad[i].x, mainRoad[i].y + 1)] = int.MaxValue / 3;
+            }
+
+            if (mainRoad[i].y - 1 >= 0)
+            {
+                connectionMap[i, GetIdByPosition(mainRoad[i].x, mainRoad[i].y - 1)] = int.MaxValue / 3;
+            }
+        }
+        if (exitPosition.x + 1 < size.x)
+        {
+            SetAllOuterPositionValue(int.MaxValue / 3,new Vector2Int(exitPosition.x + 1,exitPosition.y));
+        }
+
+        if (exitPosition.x - 1 >= 0)
+        {
+            SetAllOuterPositionValue(int.MaxValue / 3,new Vector2Int(exitPosition.x - 1,exitPosition.y));
+        }
+
+        if (exitPosition.y + 1 < size.y)
+        {
+            SetAllOuterPositionValue(int.MaxValue / 3,new Vector2Int(exitPosition.x ,exitPosition.y+1));
+        }
+
+        if (exitPosition.y - 1 >= 0)
+        {
+            SetAllOuterPositionValue(int.MaxValue / 3, new Vector2Int(exitPosition.x, exitPosition.y - 1));
+        }
+
+        SetAllOuterPositionValue(int.MaxValue / 3, exitPosition);
+        RegenerateDxtra();
+    }
+
+    private void SetAllOuterPositionValue(int value, Vector2Int positon)
+    {
+        if (positon.x + 1 < size.x)
+        {
+            connectionMap[GetIdByPosition(positon.x, positon.y),
+                GetIdByPosition(positon.x + 1, positon.y)] = value;
+            connectionMap[GetIdByPosition(positon.x + 1, positon.y),
+                GetIdByPosition(positon.x, positon.y)] = value;
+        }
+
+        if (positon.x - 1 >= 0)
+        {
+            connectionMap[GetIdByPosition(positon.x, positon.y),
+                GetIdByPosition(positon.x - 1, positon.y)] = value;
+            connectionMap[GetIdByPosition(positon.x - 1, positon.y),
+                GetIdByPosition(positon.x, positon.y)] = value;
+        }
+
+        if (positon.y + 1 < size.y)
+        {
+            connectionMap[GetIdByPosition(positon.x, positon.y),
+                GetIdByPosition(positon.x, positon.y + 1)] = value;
+            connectionMap[GetIdByPosition(positon.x, positon.y + 1),
+                GetIdByPosition(positon.x, positon.y)] = value;
+        }
+
+        if (positon.y - 1 >= 0)
+        {
+            connectionMap[GetIdByPosition(positon.x, positon.y),
+                GetIdByPosition(positon.x, positon.y - 1)] = value;
+            connectionMap[GetIdByPosition(positon.x, positon.y - 1),
+                GetIdByPosition(positon.x, positon.y)] = value;
+        }
     }
 
     private void EncloseRoad(List<Vector2Int> road)
@@ -250,7 +367,7 @@ public class MapGenerator : MonoBehaviour
 
     private void Visualze()
     {
-        mapBuilder.Initialize(size, transform, map, mainRoad, startPosition, exitPosition, playerPosition);
+        mapBuilder.Initialize(size, transform, map, mainRoad, startPosition, exitPosition, playerPosition, playerRoad);
         mapBuilder.Vizualize();
     }
 

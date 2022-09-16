@@ -20,10 +20,11 @@ public class MapBuilder
     private Vector2Int _startPosition; 
     private Vector2Int _exitPosition;
     private Vector2Int _playerPosition;
-    
+    private List<Vector2Int> _playerRoad;
+
 
     public void Initialize(Vector2Int size, Transform transform, int[,] map, List<Vector2Int> mainRoad,
-        Vector2Int startPosition, Vector2Int exitPosition, Vector2Int playerPosition)
+        Vector2Int startPosition, Vector2Int exitPosition, Vector2Int playerPosition, List<Vector2Int> playerRoad)
     {
         _size = size;
         _spawnTransform = transform;
@@ -33,6 +34,7 @@ public class MapBuilder
         _startPosition = startPosition;
         _exitPosition = exitPosition;
         _playerPosition = playerPosition;
+        _playerRoad = playerRoad;
     }
 
     public void Vizualize()
@@ -51,31 +53,11 @@ public class MapBuilder
             }
         }
 
-        for (int i = 0; i < _mainRoad.Count - 1; i++)
+        AddRoad(_mainRoad);
+
+        if (_playerRoad != null)
         {
-            if ((_mainRoad[i] - _mainRoad[i + 1]).Equals(Vector2Int.down))
-            {
-                _mapVizual[_mainRoad[i].x, _mainRoad[i].y].Item2 |= Sides.Down;
-                _mapVizual[_mainRoad[i+1].x, _mainRoad[i+1].y].Item2 |= Sides.Up;
-            }
-
-            if ((_mainRoad[i] - _mainRoad[i + 1]).Equals(Vector2Int.up))
-            {
-                _mapVizual[_mainRoad[i].x, _mainRoad[i].y].Item2 |= Sides.Up;
-                _mapVizual[_mainRoad[i+1].x, _mainRoad[i+1].y].Item2 |= Sides.Down;
-            }
-
-            if ((_mainRoad[i] - _mainRoad[i + 1]).Equals(Vector2Int.right))
-            {
-                _mapVizual[_mainRoad[i].x, _mainRoad[i].y].Item2 |= Sides.Right;
-                _mapVizual[_mainRoad[i+1].x, _mainRoad[i+1].y].Item2 |= Sides.Left;
-            }
-
-            if ((_mainRoad[i] - _mainRoad[i + 1]).Equals(Vector2Int.left))
-            {
-                _mapVizual[_mainRoad[i].x, _mainRoad[i].y].Item2 |= Sides.Left;
-                _mapVizual[_mainRoad[i+1].x, _mainRoad[i+1].y].Item2 |= Sides.Right;
-            }
+            AddRoad(_playerRoad);
         }
 
         foreach (var item in _mapVizual)
@@ -87,6 +69,36 @@ public class MapBuilder
         _mapVizual[_startPosition.x, _startPosition.y].Item1.color = Color.blue;
         _mapVizual[_exitPosition.x, _exitPosition.y].Item1.color = Color.red;
         _mapVizual[_playerPosition.x, _playerPosition.y].Item1.color = Color.green;
+    }
+
+    private void AddRoad(List<Vector2Int> road)
+    {
+        for (int i = 0; i < road.Count - 1; i++)
+        {
+            if ((road[i] - road[i + 1]).Equals(Vector2Int.down))
+            {
+                _mapVizual[road[i].x, road[i].y].Item2 |= Sides.Down;
+                _mapVizual[road[i+1].x, road[i+1].y].Item2 |= Sides.Up;
+            }
+
+            if ((road[i] - road[i + 1]).Equals(Vector2Int.up))
+            {
+                _mapVizual[road[i].x, road[i].y].Item2 |= Sides.Up;
+                _mapVizual[road[i+1].x, road[i+1].y].Item2 |= Sides.Down;
+            }
+
+            if ((road[i] - road[i + 1]).Equals(Vector2Int.right))
+            {
+                _mapVizual[road[i].x, road[i].y].Item2 |= Sides.Right;
+                _mapVizual[road[i+1].x, road[i+1].y].Item2 |= Sides.Left;
+            }
+
+            if ((road[i] - road[i + 1]).Equals(Vector2Int.left))
+            {
+                _mapVizual[road[i].x, road[i].y].Item2 |= Sides.Left;
+                _mapVizual[road[i+1].x, road[i+1].y].Item2 |= Sides.Right;
+            }
+        }
     }
 
     private Sprite FindSprite(Sides side)
