@@ -1,0 +1,25 @@
+skeleton.png
+	size: 256, 128
+	filter: Linear, Linear
+	pma: true
+Character-02
+	bounds: 116, 57, 40, 69
+Character-03
+	bounds: 116, 15, 43, 40
+Character-04
+	bounds: 2, 2, 5, 6
+	rotate: 90
+Character-05
+	bounds: 116, 2, 11, 23
+	rotate: 90
+Character-06
+	bounds: 194, 83, 37, 43
+Character-07
+	bounds: 161, 20, 35, 35
+Character-08
+	bounds: 158, 57, 34, 69
+Character-09
+	bounds: 2, 9, 112, 117
+Character_Монтажная область 1
+	bounds: 194, 59, 22, 38
+	rotate: 90
