@@ -14,7 +14,6 @@ public class MapGenerator : MonoBehaviour
 
     [SerializeField] private int corePointsCount = 3;
 
-    [SerializeField] private SpriteRenderer spriteRenderer;
     private List<Vector2Int> corePoint;
     private List<Vector2Int> mainRoad;
 
@@ -22,8 +21,9 @@ public class MapGenerator : MonoBehaviour
     private int[,] connectionMap;
     private int[,] tempMap;
     private int[,] paths;
-    private SpriteRenderer[,] mapVizual;
     private int mappingSize;
+
+    [SerializeField] private MapBuilder mapBuilder;
 
     private void Awake()
     {
@@ -45,6 +45,7 @@ public class MapGenerator : MonoBehaviour
         CreateRoads();
         Visualze();
     }
+
     private void CreateRoads()
     {
         corePoint = new List<Vector2Int>();
@@ -69,8 +70,9 @@ public class MapGenerator : MonoBehaviour
                 Vector2Int.Distance(exitPosition, randomPosition) < 2f)
             {
                 i--;
-                continue; 
+                continue;
             }
+
             corePoint.Add(randomPosition);
             map[corePoint[i].x, corePoint[i].y] = MapGeneratorConstants.CORE_POINT;
         }
@@ -78,13 +80,14 @@ public class MapGenerator : MonoBehaviour
         PrepareMapping();
         GeneratePath();
     }
+
     private void PrepareMapping()
     {
         for (int i = 0; i < mappingSize; i++)
         {
             for (int j = 0; j < size.x * size.y; j++)
             {
-                connectionMap[i, j] = Int32.MaxValue/3;
+                connectionMap[i, j] = Int32.MaxValue / 3;
             }
         }
 
@@ -111,6 +114,7 @@ public class MapGenerator : MonoBehaviour
                 connectionMap[i, GetIdByPosition(position.x, position.y - 1)] = 1;
             }
         }
+
         //TODO: optional!
         for (int i = 0; i < corePoint.Count; i++)
         {
@@ -118,10 +122,11 @@ public class MapGenerator : MonoBehaviour
             {
                 //TODO: optional!
                 connectionMap[GetIdByPosition(corePoint[i].x, corePoint[i].y),
-                    GetIdByPosition(corePoint[j].x, corePoint[j].y)] = Int32.MaxValue/3;
+                    GetIdByPosition(corePoint[j].x, corePoint[j].y)] = Int32.MaxValue / 3;
             }
         }
     }
+
     private void RegenerateDxtra()
     {
         for (int i = 0; i < mappingSize; i++)
@@ -129,9 +134,10 @@ public class MapGenerator : MonoBehaviour
             for (int j = 0; j < mappingSize; j++)
             {
                 tempMap[i, j] = connectionMap[i, j];
-                paths[i, j] = connectionMap[i, j] == Int32.MaxValue/3 ? -1 : j;
+                paths[i, j] = connectionMap[i, j] == Int32.MaxValue / 3 ? -1 : j;
             }
         }
+
         for (int k = 0; k < mappingSize; k++)
         for (int i = 0; i < mappingSize; i++)
         for (int j = 0; j < mappingSize; j++)
@@ -143,6 +149,7 @@ public class MapGenerator : MonoBehaviour
             }
         }
     }
+
     private void GeneratePath()
     {
         RegenerateDxtra();
@@ -155,59 +162,78 @@ public class MapGenerator : MonoBehaviour
         for (int i = 0; i < corePoint.Count - 1; i++)
         {
             roadPart = GetPath(corePoint[i], corePoint[i + 1]);
+            if (roadPart == null || roadPart.Count == 0)
+                continue;
             roadPart.RemoveAt(0);
             mainRoad.AddRange(roadPart);
             EncloseRoad(roadPart);
             RegenerateDxtra();
         }
+
         roadPart = GetPath(corePoint.Last(), exitPosition);
-        roadPart.RemoveAt(0);
-        mainRoad.AddRange(roadPart);
+        if (roadPart != null && roadPart.Count != 0)
+        {
+            roadPart.RemoveAt(0);
+            mainRoad.AddRange(roadPart);
+        }
+        foreach (var item in mainRoad)
+        {
+            if (map[item.x, item.y] == 0)
+            {
+                map[item.x, item.y] = MapGeneratorConstants.CORE_PATH_ID;
+            }
+        }
     }
 
     private void EncloseRoad(List<Vector2Int> road)
     {
-        connectionMap[GetIdByPosition(road[1].x, road[1].y), GetIdByPosition(road[0].x , road[0].y)] =
+        connectionMap[GetIdByPosition(road[1].x, road[1].y), GetIdByPosition(road[0].x, road[0].y)] =
+            int.MaxValue / 3;
+        connectionMap[GetIdByPosition(road[0].x, road[0].y), GetIdByPosition(road[1].x, road[1].y)] =
             int.MaxValue / 3;
         for (int i = 1; i < road.Count - 2; i++)
         {
-            // connectionMap[GetIdByPosition(road[i].x, road[i].y), GetIdByPosition(road[i - 1].x, road[i - 1].y)] =
-            //     Int32.MaxValue / 3;
-            if (road[i].x + 1 < size.x)
-            {
-                connectionMap[GetIdByPosition(road[i].x, road[i].y), GetIdByPosition(road[i].x + 1, road[i].y)] =
-                    int.MaxValue / 3;
-                connectionMap[GetIdByPosition(road[i].x + 1, road[i].y), GetIdByPosition(road[i].x, road[i].y)] =
-                    int.MaxValue / 3;
-            }
+            #region old
+            // if (road[i].x + 1 < size.x)
+            // {
+            //     connectionMap[GetIdByPosition(road[i].x, road[i].y), GetIdByPosition(road[i].x + 1, road[i].y)] =
+            //         int.MaxValue / 3;
+            //     connectionMap[GetIdByPosition(road[i].x + 1, road[i].y), GetIdByPosition(road[i].x, road[i].y)] =
+            //         int.MaxValue / 3;
+            // }
+            // if (road[i].x - 1 >= 0)
+            // {
+            //     connectionMap[GetIdByPosition(road[i].x, road[i].y), GetIdByPosition(road[i].x - 1, road[i].y)] =
+            //         int.MaxValue / 3;
+            //     connectionMap[GetIdByPosition(road[i].x - 1, road[i].y), GetIdByPosition(road[i].x, road[i].y)] =
+            //         int.MaxValue / 3;
+            // }
+            // if (road[i].y + 1 < size.y)
+            // {
+            //     connectionMap[GetIdByPosition(road[i].x, road[i].y), GetIdByPosition(road[i].x, road[i].y + 1)] =
+            //         int.MaxValue / 3;
+            //     connectionMap[GetIdByPosition(road[i].x, road[i].y + 1), GetIdByPosition(road[i].x, road[i].y)] =
+            //         int.MaxValue / 3;
+            // }
+            // if (road[i].y - 1 >= 0)
+            // {
+            //     connectionMap[GetIdByPosition(road[i].x, road[i].y), GetIdByPosition(road[i].x, road[i].y - 1)] =
+            //         int.MaxValue / 3;
+            //     connectionMap[GetIdByPosition(road[i].x, road[i].y - 1), GetIdByPosition(road[i].x, road[i].y)] =
+            //         int.MaxValue / 3;
+            // }
+            #endregion
 
-            if (road[i].x - 1 >= 0)
-            {
-                connectionMap[GetIdByPosition(road[i].x, road[i].y), GetIdByPosition(road[i].x - 1, road[i].y)] =
-                    int.MaxValue / 3;
-                connectionMap[GetIdByPosition(road[i].x - 1, road[i].y), GetIdByPosition(road[i].x, road[i].y)] =
-                    int.MaxValue / 3;
-            }
-
-            if (road[i].y + 1 < size.y)
-            {
-                connectionMap[GetIdByPosition(road[i].x, road[i].y), GetIdByPosition(road[i].x, road[i].y + 1)] =
-                    int.MaxValue / 3;
-                connectionMap[GetIdByPosition(road[i].x, road[i].y + 1), GetIdByPosition(road[i].x, road[i].y)] =
-                    int.MaxValue / 3;
-            }
-
-            if (road[i].y - 1 >= 0)
-            {
-                connectionMap[GetIdByPosition(road[i].x, road[i].y), GetIdByPosition(road[i].x, road[i].y - 1)] =
-                    int.MaxValue / 3;
-                connectionMap[GetIdByPosition(road[i].x, road[i].y - 1), GetIdByPosition(road[i].x, road[i].y)] =
-                    int.MaxValue / 3;
-            }
-
-            connectionMap[GetIdByPosition(road[^1].x, road[^1].y), GetIdByPosition(road[^2].x, road[^2].y)] =
+            connectionMap[GetIdByPosition(road[i].x, road[i].y), GetIdByPosition(road[i + 1].x, road[i + 1].y)] =
+                int.MaxValue / 3;
+            connectionMap[GetIdByPosition(road[i + 1].x, road[i + 1].y), GetIdByPosition(road[i].x, road[i].y)] =
                 int.MaxValue / 3;
         }
+
+        connectionMap[GetIdByPosition(road[^1].x, road[^1].y), GetIdByPosition(road[^2].x, road[^2].y)] =
+            int.MaxValue / 3;
+        connectionMap[GetIdByPosition(road[^2].x, road[^2].y), GetIdByPosition(road[^1].x, road[^1].y)] =
+            int.MaxValue / 3;
     }
 
     private Vector2Int GetPositionById(int id)
@@ -224,24 +250,8 @@ public class MapGenerator : MonoBehaviour
 
     private void Visualze()
     {
-        mapVizual = new SpriteRenderer[size.x, size.y];
-        for (int i = 0; i < size.x; i++)
-        {
-            for (int j = 0; j < size.y; j++)
-            {
-                mapVizual[i, j] = Instantiate(spriteRenderer, transform);
-                mapVizual[i, j].transform.position = new Vector3(i, j);
-            }
-        }
-
-        for (int i = 0; i < corePoint.Count; i++)
-        {
-            mapVizual[corePoint[i].x, corePoint[i].y].color = Color.yellow;
-        }
-
-        mapVizual[startPosition.x, startPosition.y].color = Color.blue;
-        mapVizual[exitPosition.x, exitPosition.y].color = Color.red;
-        mapVizual[playerPosition.x, playerPosition.y].color = Color.green;
+        mapBuilder.Initialize(size, transform, map, mainRoad, startPosition, exitPosition, playerPosition);
+        mapBuilder.Vizualize();
     }
 
     [ContextMenu(nameof(DestroyAllChildren))]
@@ -256,9 +266,10 @@ public class MapGenerator : MonoBehaviour
     }
 
     [SerializeField] private bool showPath = false;
+
     private void OnDrawGizmos()
     {
-        if(mainRoad==null)
+        if (mainRoad == null)
             return;
         Handles.color = Color.black;
         if (!showPath)
@@ -277,7 +288,7 @@ public class MapGenerator : MonoBehaviour
         }
         else
         {
-            for (int i = 0; i < mainRoad.Count-1; i++)
+            for (int i = 0; i < mainRoad.Count - 1; i++)
             {
                 Vector2 center = Vector2.Lerp(mainRoad[i], mainRoad[i + 1], .5f);
                 Handles.Label(center, i.ToString());
@@ -285,20 +296,22 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    private List<Vector2Int> GetPath(Vector2Int start,Vector2Int end)
+    private List<Vector2Int> GetPath(Vector2Int start, Vector2Int end)
     {
         int position = GetIdByPosition(start.x, start.y);
         int endPosition = GetIdByPosition(end.x, end.y);
         List<Vector2Int> result = new();
-        if (tempMap[position, endPosition] == Int32.MaxValue/3)
+        if (tempMap[position, endPosition] == Int32.MaxValue / 3)
         {
             return result;
         }
-        while (position!=endPosition)
+
+        while (position != endPosition)
         {
             result.Add(GetPositionById(position));
             position = paths[position, endPosition];
         }
+
         result.Add(GetPositionById(endPosition));
         return result;
     }
