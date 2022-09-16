@@ -111,7 +111,12 @@ public class MapGenerator : MonoBehaviour
                 map[road.x, road.y] = MapGeneratorConstants.ROAD_ID;
             }
         }
-        Debug.LogError(maxLength != -1);
+
+        if (maxLength == -1)
+        {
+            //TODO : fix me!
+            Debug.LogError("PZDS!");
+        }
     }
 
     private void PrepareMapping()

@@ -64,7 +64,10 @@ public class MapBuilder
         {
             var sprite = FindSprite(item.Item2);
             if (sprite != null)
+            {
                 item.Item1.sprite = sprite;
+                item.Item1.color = Color.white;
+            }
         }
         _mapVizual[_startPosition.x, _startPosition.y].Item1.color = Color.blue;
         _mapVizual[_exitPosition.x, _exitPosition.y].Item1.color = Color.red;
