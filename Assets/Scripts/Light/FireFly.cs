@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -17,51 +15,70 @@ public class FireFly : MonoBehaviour
     public bool IsPlayerControlled = false;
 
     private bool isMooving = false;
+    private bool isVisibilityChanging;
     public bool IsMooving => isMooving;
-    public event Action<FireFly> onDestibationReached = delegate { };
 
     private void Awake()
     {
         isMooving = false;
+        isVisibilityChanging = false;
         if (IsPlayerControlled)
         {
-            StartCoroutine(Appear());
+            Appear();
         }
     }
 
-    private IEnumerator Appear()
+    private async UniTask Appear()
     {
-        lightTransform.localScale = Vector3.zero;
-        if (light == null)
+        if (!isVisibilityChanging)
         {
-            Debug.LogError("No light!");
-            yield break;
+            isVisibilityChanging = true;
+            lightTransform.localScale = Vector3.zero;
+            if (light == null)
+            {
+                Debug.LogError("No light!");
+                await UniTask.Yield();
+            }
+            else
+            {
+                for (float time = 0f; time < fadeTime; time += Time.deltaTime)
+                {
+                    lightTransform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, time / fadeTime);
+                    light.range = Mathf.Lerp(0f, targetLightSize, time / fadeTime);
+                    await UniTask.Yield();
+                }
+
+                lightTransform.localScale = Vector3.one;
+            }
+            isVisibilityChanging = false;
         }
-        for (float time = 0f; time < fadeTime; time += Time.deltaTime)
-        {
-            lightTransform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, time / fadeTime);
-            light.range = Mathf.Lerp(0f, targetLightSize, time / fadeTime);
-            yield return null;
-        }
-        lightTransform.localScale = Vector3.one;
     }
     
-    private IEnumerator Disappear()
+    private async UniTask  Disappear()
     {
-        lightTransform.localScale = Vector3.one;
-        if (light == null)
+        if (!isVisibilityChanging)
         {
-            Debug.LogError("No light!");
-            yield break;
+            isVisibilityChanging = true;
+            lightTransform.localScale = Vector3.one;
+            if (light == null)
+            {
+                Debug.LogError("No light!");
+                await UniTask.Yield();
+            }
+            else
+            {
+                float initialLight = light.range;
+                for (float time = 0f; time < fadeTime; time += Time.deltaTime)
+                {
+                    lightTransform.localScale = Vector3.Lerp(Vector3.one, Vector3.zero, time / fadeTime);
+                    light.range = Mathf.Lerp(initialLight, 0f, time / fadeTime);
+                    await UniTask.Yield();
+                }
+
+                lightTransform.localScale = Vector3.zero;
+            }
+            isVisibilityChanging = false;
         }
-        float initialLight = light.range;
-        for (float time = 0f; time < fadeTime; time += Time.deltaTime)
-        {
-            lightTransform.localScale = Vector3.Lerp(Vector3.one, Vector3.zero, time / fadeTime);
-            light.range = Mathf.Lerp(initialLight, 0f, time / fadeTime);
-            yield return null;
-        }
-        lightTransform.localScale = Vector3.zero;
     }
 
     public bool MoveToPosition(Vector3 position)
@@ -69,7 +86,7 @@ public class FireFly : MonoBehaviour
         if(isMooving)
             return false;
         isMooving = true;
-        StartCoroutine(Appear());
+        Appear();
         MoveCoroutine(position);
         return true;
     }
@@ -79,7 +96,7 @@ public class FireFly : MonoBehaviour
         if(isMooving)
             return false;
         isMooving = true;
-        StartCoroutine(Disappear());
+        Disappear();
         MoveTransformCoroutine(transformToMoveTo);
         return true;
     }
@@ -94,19 +111,17 @@ public class FireFly : MonoBehaviour
             await UniTask.Yield();
         }
         isMooving = false;
-        onDestibationReached.Invoke(this);
     }
     
     private async UniTask MoveTransformCoroutine(Transform destination)
     {
         Vector2 moveDirection = Vector2.zero;
-        while (Vector2.Distance(transform.position, destination.position) > stoppingDistance)
+        while (isActiveAndEnabled && Vector2.Distance(transform.position, destination.position) > stoppingDistance)
         {
             moveDirection = (destination.position - transform.position).normalized * speed * Time.deltaTime;
             transform.position += (Vector3)moveDirection;
             await UniTask.Yield();
         }
         isMooving = false;
-        onDestibationReached.Invoke(this);
     }
 }

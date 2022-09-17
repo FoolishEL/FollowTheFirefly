@@ -34,12 +34,14 @@ public class LightController : MonoBehaviour
             {
                 if (_activeFireFlies.Count == 0)
                     return;
-                var firstFly = _activeFireFlies.First();
-                if (firstFly.MoveToTransform(playerTransform))
+                if (TryGetSafeFlyToReplace(out var fly))
                 {
-                    _inRoadFireFlies.Add(firstFly);
-                    _activeFireFlies.RemoveAt(0);
-                    StartCoroutine(ResendFireFly(firstFly, worldPosition));
+                    if (fly.MoveToTransform(playerTransform))
+                    {
+                        _inRoadFireFlies.Add(fly);
+                        _activeFireFlies.RemoveAt(0);
+                        StartCoroutine(ResendFireFly(fly, worldPosition));
+                    }
                 }
             }
             else
@@ -57,7 +59,7 @@ public class LightController : MonoBehaviour
                         startPosition.z = fly.transform.position.z;
                         fly.transform.position = startPosition;
                         _inRoadFireFlies.Add(fly);
-                        fly.onDestibationReached += PlaceIntoActive;
+                        StartCoroutine(PlaceIntoActiveAwaitor(fly));
                     }
                     else
                     {
@@ -72,28 +74,83 @@ public class LightController : MonoBehaviour
                     fly.transform.position = startPosition;
                     _inRoadFireFlies.Add(fly);
                     fly.MoveToPosition(worldPosition);
-                    fly.onDestibationReached += PlaceIntoActive;
+                    StartCoroutine(PlaceIntoActiveAwaitor(fly));
                 }
 
             }
-
             return;
         }
 
         if (Input.GetMouseButtonDown(1))
         {
-            if (_activeFireFlies.Any(c => Vector2.Distance(worldPosition, c.transform.position) < flyTouchDistance))
+            if (TryGetSafeFlyInRange(worldPosition,out var fly))
             {
-                var fly = _activeFireFlies.First(c =>
-                    Vector2.Distance(worldPosition, c.transform.position) < flyTouchDistance);
                 if (fly.MoveToTransform(playerTransform))
                 {
                     _activeFireFlies.Remove(fly);
                     _inRoadFireFlies.Add(fly);
-                    fly.onDestibationReached += PlaceIntoInactive;
+                    StartCoroutine(PlaceIntoInactiveAwaitor(fly));
                 }
             }
         }
+    }
+
+    private bool TryGetSafeFlyInRange(Vector3 worldPosition,  out FireFly fly)
+    {
+        var flies = _activeFireFlies.Where(c =>
+            Vector2.Distance(worldPosition, c.transform.position) < flyTouchDistance).ToList();
+        fly = null;
+        if (flies.Any())
+        {
+            List<Vector2> areasCenters = new List<Vector2>();
+            foreach (var suitableFly in flies)
+            {
+                areasCenters.Clear();
+                areasCenters.AddRange(_activeFireFlies.Where(c => c != suitableFly)
+                    .Select(c => (Vector2)c.transform.position));
+                areasCenters.AddRange(staticBonusLights.Select(c => (Vector2)c.position));
+                if (areasCenters.Any(c => Vector2.Distance(c, playerTransform.position) < lightSettings.walkAbleRange))
+                {
+                    fly = suitableFly;
+                    return true;
+                }
+            }
+        }
+        return fly != null;
+    }
+
+    private bool TryGetSafeFlyToReplace(out FireFly fly)
+    {
+        fly = null;
+        List<(FireFly, bool)> isFlyInPlayerRange = new List<(FireFly, bool)>();
+        foreach (var f in _activeFireFlies)
+        {
+            isFlyInPlayerRange.Add((f,
+                Vector2.Distance(playerTransform.position, f.transform.position) <= lightSettings.walkAbleRange));
+        }
+
+        List<Vector2> areasCenters = new List<Vector2>();
+        for (int i = 0; i < isFlyInPlayerRange.Count; i++)
+        {
+            if (isFlyInPlayerRange[i].Item2)
+            {
+                areasCenters.Clear();
+                areasCenters.AddRange(_activeFireFlies.Where(c => c != isFlyInPlayerRange[i].Item2)
+                    .Select(c => (Vector2)c.transform.position));
+                areasCenters.AddRange(staticBonusLights.Select(c => (Vector2)c.position));
+                if (areasCenters.Any(c => Vector2.Distance(c, playerTransform.position) < lightSettings.walkAbleRange))
+                {
+                    fly = isFlyInPlayerRange[i].Item1;
+                    return true;
+                }
+            }
+            else
+            {
+                fly = isFlyInPlayerRange[i].Item1;
+                break;
+            }
+        }
+        return fly != null;
     }
 
     private IEnumerator ResendFireFly(FireFly fireFly, Vector3 destination)
@@ -102,24 +159,31 @@ public class LightController : MonoBehaviour
         {
             yield return null;
         }
-
+        yield return null;
+        yield return null;
         if (fireFly.MoveToPosition(destination))
-            fireFly.onDestibationReached += PlaceIntoActive;
+            StartCoroutine(PlaceIntoActiveAwaitor(fireFly));
     }
 
-    private void PlaceIntoActive(FireFly fireFly)
+    private IEnumerator PlaceIntoActiveAwaitor(FireFly fireFly)
     {
+        while (isActiveAndEnabled && fireFly.IsMooving)
+        {
+            yield return null;
+        }
         _inRoadFireFlies.Remove(fireFly);
         _activeFireFlies.Add(fireFly);
-        fireFly.onDestibationReached -= PlaceIntoActive;
     }
 
-    private void PlaceIntoInactive(FireFly fireFly)
+    private IEnumerator PlaceIntoInactiveAwaitor(FireFly fireFly)
     {
+        while (isActiveAndEnabled&& fireFly.IsMooving)
+        {
+            yield return null;
+        }
         _inRoadFireFlies.Remove(fireFly);
         _inactiveFireFlies.Add(fireFly);
         fireFly.gameObject.SetActive(false);
-        fireFly.onDestibationReached -= PlaceIntoInactive;
     }
 
     public IReadOnlyList<Vector2> GetWalkableArea(out float range)
