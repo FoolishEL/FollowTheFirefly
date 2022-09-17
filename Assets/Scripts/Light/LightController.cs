@@ -35,10 +35,12 @@ public class LightController : MonoBehaviour
                 if (_activeFireFlies.Count == 0)
                     return;
                 var firstFly = _activeFireFlies.First();
-                _inRoadFireFlies.Add(firstFly);
-                _activeFireFlies.RemoveAt(0);
-                firstFly.MoveToTransform(playerTransform);
-                StartCoroutine(ResendFireFly(firstFly, worldPosition));
+                if (firstFly.MoveToTransform(playerTransform))
+                {
+                    _inRoadFireFlies.Add(firstFly);
+                    _activeFireFlies.RemoveAt(0);
+                    StartCoroutine(ResendFireFly(firstFly, worldPosition));
+                }
             }
             else
             {
@@ -48,19 +50,31 @@ public class LightController : MonoBehaviour
                     fly = _inactiveFireFlies.First();
 
                     fly.gameObject.SetActive(true);
-                    _inactiveFireFlies.RemoveAt(0);
+                    if (fly.MoveToPosition(worldPosition))
+                    {
+                        _inactiveFireFlies.RemoveAt(0);
+                        Vector3 startPosition = playerTransform.position;
+                        startPosition.z = fly.transform.position.z;
+                        fly.transform.position = startPosition;
+                        _inRoadFireFlies.Add(fly);
+                        fly.onDestibationReached += PlaceIntoActive;
+                    }
+                    else
+                    {
+                        fly.gameObject.SetActive(false);
+                    }
                 }
                 else
                 {
                     fly = Instantiate(prefab, transform);
+                    Vector3 startPosition = playerTransform.position;
+                    startPosition.z = fly.transform.position.z;
+                    fly.transform.position = startPosition;
+                    _inRoadFireFlies.Add(fly);
+                    fly.MoveToPosition(worldPosition);
+                    fly.onDestibationReached += PlaceIntoActive;
                 }
 
-                Vector3 startPosition = playerTransform.position;
-                startPosition.z = fly.transform.position.z;
-                fly.transform.position = startPosition;
-                _inRoadFireFlies.Add(fly);
-                fly.MoveToPosition(worldPosition);
-                fly.onDestibationReached += PlaceIntoActive;
             }
 
             return;
@@ -72,10 +86,12 @@ public class LightController : MonoBehaviour
             {
                 var fly = _activeFireFlies.First(c =>
                     Vector2.Distance(worldPosition, c.transform.position) < flyTouchDistance);
-                _activeFireFlies.Remove(fly);
-                _inRoadFireFlies.Add(fly);
-                fly.MoveToTransform(playerTransform);
-                fly.onDestibationReached += PlaceIntoInactive;
+                if (fly.MoveToTransform(playerTransform))
+                {
+                    _activeFireFlies.Remove(fly);
+                    _inRoadFireFlies.Add(fly);
+                    fly.onDestibationReached += PlaceIntoInactive;
+                }
             }
         }
     }
@@ -87,8 +103,8 @@ public class LightController : MonoBehaviour
             yield return null;
         }
 
-        fireFly.MoveToPosition(destination);
-        fireFly.onDestibationReached += PlaceIntoActive;
+        if (fireFly.MoveToPosition(destination))
+            fireFly.onDestibationReached += PlaceIntoActive;
     }
 
     private void PlaceIntoActive(FireFly fireFly)

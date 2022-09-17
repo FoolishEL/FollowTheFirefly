@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class FireFly : MonoBehaviour
@@ -63,45 +64,47 @@ public class FireFly : MonoBehaviour
         lightTransform.localScale = Vector3.zero;
     }
 
-    public void MoveToPosition(Vector3 position)
+    public bool MoveToPosition(Vector3 position)
     {
         if(isMooving)
-            return;
+            return false;
         isMooving = true;
-        StartCoroutine(MoveCoroutine(position));
         StartCoroutine(Appear());
+        MoveCoroutine(position);
+        return true;
     }
 
-    public void MoveToTransform(Transform transformToMoveTo)
+    public bool MoveToTransform(Transform transformToMoveTo)
     {
         if(isMooving)
-            return;
+            return false;
         isMooving = true;
-        StartCoroutine(MoveTransformCoroutine(transformToMoveTo));
         StartCoroutine(Disappear());
+        MoveTransformCoroutine(transformToMoveTo);
+        return true;
     }
 
-    private IEnumerator MoveCoroutine(Vector3 destination)
+    private async UniTask MoveCoroutine(Vector3 destination)
     {
         Vector2 moveDirection = Vector2.zero;
         while (Vector2.Distance(transform.position, destination) > stoppingDistance)
         {
             moveDirection = (destination - transform.position).normalized * speed * Time.deltaTime;
             transform.position += (Vector3)moveDirection;
-            yield return null;
+            await UniTask.Yield();
         }
         isMooving = false;
         onDestibationReached.Invoke(this);
     }
     
-    private IEnumerator MoveTransformCoroutine(Transform destination)
+    private async UniTask MoveTransformCoroutine(Transform destination)
     {
         Vector2 moveDirection = Vector2.zero;
         while (Vector2.Distance(transform.position, destination.position) > stoppingDistance)
         {
             moveDirection = (destination.position - transform.position).normalized * speed * Time.deltaTime;
             transform.position += (Vector3)moveDirection;
-            yield return null;
+            await UniTask.Yield();
         }
         isMooving = false;
         onDestibationReached.Invoke(this);
