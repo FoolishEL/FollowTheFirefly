@@ -386,7 +386,7 @@ public class MapGenerator : MonoBehaviour
             DestroyImmediate(item.gameObject);
         }
     }
-
+    #if false
     [SerializeField] private bool showPath = false;
 
     private void OnDrawGizmos()
@@ -417,6 +417,7 @@ public class MapGenerator : MonoBehaviour
             }
         }
     }
+#endif
 
     private List<Vector2Int> GetPath(Vector2Int start, Vector2Int end)
     {
