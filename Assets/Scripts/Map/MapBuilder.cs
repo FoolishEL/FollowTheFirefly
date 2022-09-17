@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
 
 [Serializable]
 public class MapBuilder
@@ -13,6 +11,7 @@ public class MapBuilder
     private SpriteRenderer spriteRenderer;
 
     [SerializeField] private List<SidedImages> sidedImages;
+    [SerializeField] private float positionScaleModification = 3f;
     private (SpriteRenderer, Sides)[,] _mapVizual;
     private Transform _spawnTransform;
     private int[,] _map;
@@ -45,7 +44,8 @@ public class MapBuilder
             for (int j = 0; j < _size.y; j++)
             {
                 _mapVizual[i, j] = (GameObject.Instantiate(spriteRenderer, _spawnTransform),Sides.None);
-                _mapVizual[i, j].Item1.transform.position = new Vector3(i, j);
+                _mapVizual[i, j].Item1.transform.position =
+                    new Vector3(i * positionScaleModification, j * positionScaleModification);
                 if (_map[i, j] == MapGeneratorConstants.CORE_PATH_ID)
                 {
                     _mapVizual[i, j].Item1.color = Color.yellow;

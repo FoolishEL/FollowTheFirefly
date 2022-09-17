@@ -1,77 +1,124 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class LightController : MonoBehaviour
 {
-    [SerializeField] private Transform prefab;
-    private Queue<Transform> spawnedPrefabs;
-    [SerializeField] private float fadeTime = 1.2f;
+    [SerializeField] private FireFly prefab;
+    private List<FireFly> _activeFireFlies;
+    private List<FireFly> _inRoadFireFlies;
+    private List<FireFly> _inactiveFireFlies;
     [SerializeField] private Camera camera;
+    [SerializeField] private int startMaxPLayerLights = 4;
+    [SerializeField] private List<Transform> staticBonusLights;
+    [SerializeField] private LightSettings lightSettings;
+    [SerializeField] private float flyTouchDistance = 1f;
+    [SerializeField] private Transform playerTransform;
 
     private void Awake()
     {
-        spawnedPrefabs = new Queue<Transform>(3);
+        _activeFireFlies = new List<FireFly>();
+        _inactiveFireFlies = new List<FireFly>();
+        _inRoadFireFlies = new List<FireFly>();
     }
 
     private void Update()
     {
+        Vector3 worldPosition = camera.ScreenToWorldPoint(Input.mousePosition);
+        worldPosition.z = prefab.transform.position.z;
         if (Input.GetMouseButtonDown(0))
         {
-            Vector3 worldPosition = camera.ScreenToWorldPoint(Input.mousePosition);
-            worldPosition.z = prefab.position.z;
-            if (spawnedPrefabs.Count == 3)
+            if (_activeFireFlies.Count + _inRoadFireFlies.Count == startMaxPLayerLights)
             {
-                var replacedPrefab = spawnedPrefabs.Dequeue();
-                StartCoroutine(Disappear(replacedPrefab));
+                if (_activeFireFlies.Count == 0)
+                    return;
+                var firstFly = _activeFireFlies.First();
+                _inRoadFireFlies.Add(firstFly);
+                _activeFireFlies.RemoveAt(0);
+                firstFly.MoveToTransform(playerTransform);
+                StartCoroutine(ResendFireFly(firstFly, worldPosition));
             }
-            var newLight = Instantiate(prefab, worldPosition, Quaternion.identity, transform);
-            StartCoroutine(Appear(newLight));
-            spawnedPrefabs.Enqueue(newLight);
+            else
+            {
+                FireFly fly;
+                if (_inactiveFireFlies.Count != 0)
+                {
+                    fly = _inactiveFireFlies.First();
+
+                    fly.gameObject.SetActive(true);
+                    _inactiveFireFlies.RemoveAt(0);
+                }
+                else
+                {
+                    fly = Instantiate(prefab, transform);
+                }
+
+                Vector3 startPosition = playerTransform.position;
+                startPosition.z = fly.transform.position.z;
+                fly.transform.position = startPosition;
+                _inRoadFireFlies.Add(fly);
+                fly.MoveToPosition(worldPosition);
+                fly.onDestibationReached += PlaceIntoActive;
+            }
+
+            return;
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            if (_activeFireFlies.Any(c => Vector2.Distance(worldPosition, c.transform.position) < flyTouchDistance))
+            {
+                var fly = _activeFireFlies.First(c =>
+                    Vector2.Distance(worldPosition, c.transform.position) < flyTouchDistance);
+                _activeFireFlies.Remove(fly);
+                _inRoadFireFlies.Add(fly);
+                fly.MoveToTransform(playerTransform);
+                fly.onDestibationReached += PlaceIntoInactive;
+            }
         }
     }
 
-    private IEnumerator Appear(Transform target)
+    private IEnumerator ResendFireFly(FireFly fireFly, Vector3 destination)
     {
-        target.localScale = Vector3.zero;
-        float targetLightSize = 1.6f;
-        Light light = target.GetComponent<Light>();
-        if (light != null)
+        while (fireFly.IsMooving)
         {
-            targetLightSize = light.range;
-        }
-        else
-        {
-            Debug.LogError("No light!");
-            yield break;
-        }
-        for (float time = 0f; time < fadeTime; time += Time.deltaTime)
-        {
-            target.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, time / fadeTime);
-            light.range = Mathf.Lerp(0f, targetLightSize, time / fadeTime);
             yield return null;
         }
-        target.localScale = Vector3.one;
+
+        fireFly.MoveToPosition(destination);
+        fireFly.onDestibationReached += PlaceIntoActive;
     }
-    
-    private IEnumerator Disappear(Transform target)
+
+    private void PlaceIntoActive(FireFly fireFly)
     {
-        target.localScale = Vector3.one;
-        Light light = target.GetComponent<Light>();
-        if (light == null)
-        {
-            Debug.LogError("No light!");
-            yield break;
-        }
-        float initialLight = light.range;
-        for (float time = 0f; time < fadeTime; time += Time.deltaTime)
-        {
-            target.localScale = Vector3.Lerp(Vector3.one, Vector3.zero, time / fadeTime);
-            light.range = Mathf.Lerp(initialLight, 0f, time / fadeTime);
-            yield return null;
-        }
-        target.localScale = Vector3.zero;
-        Destroy(target.gameObject);
+        _inRoadFireFlies.Remove(fireFly);
+        _activeFireFlies.Add(fireFly);
+        fireFly.onDestibationReached -= PlaceIntoActive;
+    }
+
+    private void PlaceIntoInactive(FireFly fireFly)
+    {
+        _inRoadFireFlies.Remove(fireFly);
+        _inactiveFireFlies.Add(fireFly);
+        fireFly.gameObject.SetActive(false);
+        fireFly.onDestibationReached -= PlaceIntoInactive;
+    }
+
+    public IReadOnlyList<Vector2> GetWalkableArea(out float range)
+    {
+        range = lightSettings.walkAbleRange;
+        List<Vector2> areasCenters = new List<Vector2>();
+        areasCenters.AddRange(_activeFireFlies.Select(c => (Vector2)c.transform.position));
+        areasCenters.AddRange(staticBonusLights.Select(c => (Vector2)c.position));
+        return areasCenters;
+    }
+
+    [Serializable]
+    public struct LightSettings
+    {
+        public float lightRange;
+        public float walkAbleRange;
     }
 }

@@ -1,10 +1,13 @@
 using System;
+using System.Linq;
 using Spine.Unity;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 public class PlayerMoveController : MonoBehaviour
 {
+    #region Animations
+    [Header("Animation Settings")]
     [SerializeField] private SkeletonAnimation skeletonAnimation;
 
     [FormerlySerializedAs("up")] [SerializeField]
@@ -19,13 +22,16 @@ public class PlayerMoveController : MonoBehaviour
     [SerializeField] private AnimationReferenceAsset upIdle;
     [SerializeField] private AnimationReferenceAsset downIdle;
     [SerializeField] private AnimationReferenceAsset rightIdle;
-    [SerializeField] private float speed = 2f;
-    [SerializeField] private float idleAnimSpeed;
+    [FormerlySerializedAs("idleAnimSpeed")] [SerializeField] private float idleAnimStoppingSpeed;
+    #endregion
+    
+    [SerializeField,Space(20f),Header("PLayer Settings")] private float speed = 2f;
     private Vector2Int direction = Vector2Int.zero;
     private Sides _sides;
     private bool isLastStopped = true;
 
     [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private LightController lightController;
 
     private void Awake()
     {
@@ -55,15 +61,18 @@ public class PlayerMoveController : MonoBehaviour
         {
             direction += Vector2Int.right;
         }
-
+        
         if (direction != Vector2Int.zero)
         {
-            Vector2 directionNormalized = direction;
-            directionNormalized.Normalize();
-            rb.velocity = (rb.velocity + directionNormalized * speed).normalized * speed;
+            if (CanMoveThisDirection(direction))
+            {
+                Vector2 directionNormalized = direction;
+                directionNormalized.Normalize();
+                rb.velocity = (rb.velocity + directionNormalized * speed).normalized * speed;
+            }
         }
 
-        if (rb.velocity.magnitude > idleAnimSpeed)
+        if (rb.velocity.magnitude > idleAnimStoppingSpeed)
         {
             isLastStopped = false;
             if (Mathf.Abs(rb.velocity.y) >= Math.Abs(rb.velocity.x))
@@ -107,5 +116,18 @@ public class PlayerMoveController : MonoBehaviour
 
             isLastStopped = true;
         }
+    }
+
+    private bool CanMoveThisDirection(Vector2Int targetDirection)
+    {
+        var areas = lightController.GetWalkableArea(out var range);
+        bool canMove = false;
+        canMove = areas.Any(c => Vector2.Distance(c, transform.position) < range);
+        if (!canMove)
+        {
+            canMove = areas.Any(
+                c => Vector2.Distance(c, (Vector2)transform.position + targetDirection) < range);
+        }
+        return canMove;
     }
 }
