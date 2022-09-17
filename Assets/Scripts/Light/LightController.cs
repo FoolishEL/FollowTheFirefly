@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Spine.Unity;
 using UnityEngine;
 
 public class LightController : MonoBehaviour
@@ -16,12 +17,15 @@ public class LightController : MonoBehaviour
     [SerializeField] private LightSettings lightSettings;
     [SerializeField] private float flyTouchDistance = 1f;
     [SerializeField] private Transform playerTransform;
+    [SerializeField] private Transform lampTransform;
+    [SerializeField] private AnimationForLantern animController;
 
     private void Awake()
     {
         _activeFireFlies = new List<FireFly>();
         _inactiveFireFlies = new List<FireFly>();
         _inRoadFireFlies = new List<FireFly>();
+        animController.SetNumber(4);
     }
 
     private void Update()
@@ -36,7 +40,7 @@ public class LightController : MonoBehaviour
                     return;
                 if (TryGetSafeFlyToReplace(out var fly))
                 {
-                    if (fly.MoveToTransform(playerTransform))
+                    if (fly.MoveToTransform(lampTransform))
                     {
                         _inRoadFireFlies.Add(fly);
                         _activeFireFlies.RemoveAt(0);
@@ -55,7 +59,8 @@ public class LightController : MonoBehaviour
                     if (fly.MoveToPosition(worldPosition))
                     {
                         _inactiveFireFlies.RemoveAt(0);
-                        Vector3 startPosition = playerTransform.position;
+                        animController.SetNumber(animController.CurrentCount - 1);
+                        Vector3 startPosition = lampTransform.position;
                         startPosition.z = fly.transform.position.z;
                         fly.transform.position = startPosition;
                         _inRoadFireFlies.Add(fly);
@@ -69,11 +74,12 @@ public class LightController : MonoBehaviour
                 else
                 {
                     fly = Instantiate(prefab, transform);
-                    Vector3 startPosition = playerTransform.position;
+                    Vector3 startPosition = lampTransform.position;
                     startPosition.z = fly.transform.position.z;
                     fly.transform.position = startPosition;
                     _inRoadFireFlies.Add(fly);
                     fly.MoveToPosition(worldPosition);
+                    animController.SetNumber(animController.CurrentCount - 1);
                     StartCoroutine(PlaceIntoActiveAwaitor(fly));
                 }
 
@@ -85,7 +91,7 @@ public class LightController : MonoBehaviour
         {
             if (TryGetSafeFlyInRange(worldPosition,out var fly))
             {
-                if (fly.MoveToTransform(playerTransform))
+                if (fly.MoveToTransform(lampTransform))
                 {
                     _activeFireFlies.Remove(fly);
                     _inRoadFireFlies.Add(fly);
@@ -181,6 +187,7 @@ public class LightController : MonoBehaviour
         {
             yield return null;
         }
+        animController.SetNumber(animController.CurrentCount + 1);
         _inRoadFireFlies.Remove(fireFly);
         _inactiveFireFlies.Add(fireFly);
         fireFly.gameObject.SetActive(false);
@@ -200,5 +207,32 @@ public class LightController : MonoBehaviour
     {
         public float lightRange;
         public float walkAbleRange;
+    }
+    
+    [Serializable]
+    public class AnimationForLantern
+    {
+        public int CurrentCount { get; protected set; } = 4;
+        [SerializeField] private AnimationReferenceAsset zero;
+        [SerializeField] private AnimationReferenceAsset one;
+        [SerializeField] private AnimationReferenceAsset two;
+        [SerializeField] private AnimationReferenceAsset three;
+        [SerializeField] private AnimationReferenceAsset four;
+        [SerializeField] private SkeletonAnimation animation;
+
+        public void SetNumber(int number)
+        {
+            CurrentCount = number;
+            AnimationReferenceAsset current = zero;
+            if (number == 1)
+                current = one;
+            if (number == 2)
+                current = two;
+            if (number == 3)
+                current = three;
+            if (number == 4)
+                current = four;
+            animation.state.SetAnimation(0, current, true);
+        }
     }
 }

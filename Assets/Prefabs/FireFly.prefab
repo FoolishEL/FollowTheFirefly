@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6759194123086604011}
-  - component: {fileID: 6759194123086604009}
   - component: {fileID: 6759194123086604008}
   - component: {fileID: 2981708852733489706}
   m_Layer: 0
@@ -34,68 +33,6 @@ Transform:
   m_Father: {fileID: 6759194123511009187}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!108 &6759194123086604009
-Light:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6759194123086604010}
-  m_Enabled: 0
-  serializedVersion: 10
-  m_Type: 2
-  m_Shape: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 24.58
-  m_Range: 1.6
-  m_SpotAngle: 30
-  m_InnerSpotAngle: 21.80208
-  m_CookieSize: 10
-  m_Shadows:
-    m_Type: 0
-    m_Resolution: -1
-    m_CustomResolution: -1
-    m_Strength: 1
-    m_Bias: 0.05
-    m_NormalBias: 0.4
-    m_NearPlane: 0.2
-    m_CullingMatrixOverride:
-      e00: 1
-      e01: 0
-      e02: 0
-      e03: 0
-      e10: 0
-      e11: 1
-      e12: 0
-      e13: 0
-      e20: 0
-      e21: 0
-      e22: 1
-      e23: 0
-      e30: 0
-      e31: 0
-      e32: 0
-      e33: 1
-    m_UseCullingMatrixOverride: 0
-  m_Cookie: {fileID: 0}
-  m_DrawHalo: 0
-  m_Flare: {fileID: 0}
-  m_RenderMode: 0
-  m_CullingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_RenderingLayerMask: 1
-  m_Lightmapping: 2
-  m_LightShadowCasterMode: 0
-  m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 0
-  m_ColorTemperature: 6570
-  m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
-  m_UseBoundingSphereOverride: 0
-  m_UseViewFrustumForShadowCasterCull: 1
-  m_ShadowRadius: 0
-  m_ShadowAngle: 0
 --- !u!331 &6759194123086604008
 SpriteMask:
   m_ObjectHideFlags: 0
@@ -137,7 +74,7 @@ SpriteMask:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 9a0ac979b26d44a72a669fbca60b940d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 81d2e62441cbd1a45ad831f089375c2e, type: 3}
   m_MaskAlphaCutoff: 0
   m_FrontSortingLayerID: 0
   m_BackSortingLayerID: 0
@@ -188,7 +125,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 9a0ac979b26d44a72a669fbca60b940d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 81d2e62441cbd1a45ad831f089375c2e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -245,11 +182,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd5b6ccbe4e2e418994428c95750dce2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  light: {fileID: 6759194123086604009}
   lightTransform: {fileID: 6759194123086604011}
   fadeTime: 1.2
-  targetLightSize: 1.6
-  stoppingDistance: 0.5
+  stoppingDistance: 0.2
   speed: 2
   IsPlayerControlled: 0
 --- !u!1 &6759194123784618070

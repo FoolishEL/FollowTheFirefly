@@ -8,11 +8,11 @@ public class MapBuilder
 {
     private Vector2Int _size;
     [SerializeField]
-    private SpriteRenderer spriteRenderer;
+    private TileColliderSetter spriteRenderer;
 
     [SerializeField] private List<SidedImages> sidedImages;
     [SerializeField] private float positionScaleModification = 3f;
-    private (SpriteRenderer, Sides)[,] _mapVizual;
+    private (TileColliderSetter, Sides)[,] _mapVizual;
     private Transform _spawnTransform;
     private int[,] _map;
     private List<Vector2Int> _mainRoad;
@@ -38,17 +38,17 @@ public class MapBuilder
 
     public void Vizualize()
     {
-        _mapVizual = new (SpriteRenderer,Sides)[_size.x, _size.y];
+        _mapVizual = new (TileColliderSetter,Sides)[_size.x, _size.y];
         for (int i = 0; i < _size.x; i++)
         {
             for (int j = 0; j < _size.y; j++)
             {
-                _mapVizual[i, j] = (GameObject.Instantiate(spriteRenderer, _spawnTransform),Sides.None);
+                _mapVizual[i, j] = (GameObject.Instantiate(spriteRenderer, _spawnTransform), Sides.None);
                 _mapVizual[i, j].Item1.transform.position =
                     new Vector3(i * positionScaleModification, j * positionScaleModification);
                 if (_map[i, j] == MapGeneratorConstants.CORE_PATH_ID)
                 {
-                    _mapVizual[i, j].Item1.color = Color.yellow;
+                    _mapVizual[i, j].Item1.SpriteRenderer.color = Color.yellow;
                 }
             }
         }
@@ -65,13 +65,14 @@ public class MapBuilder
             var sprite = FindSprite(item.Item2);
             if (sprite != null)
             {
-                item.Item1.sprite = sprite;
-                item.Item1.color = Color.white;
+                item.Item1.SpriteRenderer.sprite = sprite;
+                item.Item1.SetupColliders(item.Item2);
+                item.Item1.SpriteRenderer.color = Color.white;
             }
         }
-        _mapVizual[_startPosition.x, _startPosition.y].Item1.color = Color.blue;
-        _mapVizual[_exitPosition.x, _exitPosition.y].Item1.color = Color.red;
-        _mapVizual[_playerPosition.x, _playerPosition.y].Item1.color = Color.green;
+        _mapVizual[_startPosition.x, _startPosition.y].Item1.SpriteRenderer.color = Color.blue;
+        _mapVizual[_exitPosition.x, _exitPosition.y].Item1.SpriteRenderer.color = Color.red;
+        _mapVizual[_playerPosition.x, _playerPosition.y].Item1.SpriteRenderer.color = Color.green;
     }
 
     private void AddRoad(List<Vector2Int> road)
@@ -137,6 +138,29 @@ public class MapBuilder
         if (SutibleSidedImage.Any())
         {
             return SutibleSidedImage.First().Image;
+        }
+
+        if (side == Sides.Down || side == Sides.Up)
+        {
+            SutibleSidedImage.Clear();
+            SutibleSidedImage.AddRange(sidedImages);
+            SutibleSidedImage = SutibleSidedImage.Where(c =>
+                    c.Side.HasFlag(Sides.Down) && c.Side.HasFlag(Sides.Up) && !c.Side.HasFlag(Sides.Left) &&
+                    !c.Side.HasFlag(Sides.Right))
+                .ToList();
+            if (SutibleSidedImage.Any())
+                return SutibleSidedImage.First().Image;
+        }
+        if (side == Sides.Left || side == Sides.Right)
+        {
+            SutibleSidedImage.Clear();
+            SutibleSidedImage.AddRange(sidedImages);
+            SutibleSidedImage = SutibleSidedImage.Where(c =>
+                    c.Side.HasFlag(Sides.Right) && c.Side.HasFlag(Sides.Left) && !c.Side.HasFlag(Sides.Down) &&
+                    !c.Side.HasFlag(Sides.Up))
+                .ToList();
+            if (SutibleSidedImage.Any())
+                return SutibleSidedImage.First().Image;
         }
         return null;
     }
