@@ -116,7 +116,8 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: TILE_RIGHT_DOWN
+      name: "tiles_\u041C\u043E\u043D\u0442\u0430\u0436\u043D\u0430\u044F \u043E\u0431\u043B\u0430\u0441\u0442\u044C
+        1_0"
       rect:
         serializedVersion: 2
         x: 0
@@ -130,17 +131,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 207cd5fe4463a4753908f2c000015b51
-      internalID: 770037969
+      spriteID: 84a0cf06fce434e89923283b0fc657b3
+      internalID: 1327560778
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TILE_LEFT_RIGHT_DOWN
+      name: "tiles_\u041C\u043E\u043D\u0442\u0430\u0436\u043D\u0430\u044F \u043E\u0431\u043B\u0430\u0441\u0442\u044C
+        1_1"
       rect:
         serializedVersion: 2
-        x: 268
+        x: 270
         y: 810
         width: 270
         height: 270
@@ -151,19 +153,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c1d85cbd035034835abbb893b2d7f64c
-      internalID: 491561182
+      spriteID: dd709fc6d00cc4d0fb48d5b89707826f
+      internalID: -1890619354
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TILE_LEFT_DOWN
+      name: "tiles_\u041C\u043E\u043D\u0442\u0430\u0436\u043D\u0430\u044F \u043E\u0431\u043B\u0430\u0441\u0442\u044C
+        1_2"
       rect:
         serializedVersion: 2
         x: 540
         y: 810
-        width: 270.25
+        width: 270
         height: 270
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -172,19 +175,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b0208ec698c9e460db88c2d6c3ab906d
-      internalID: -28301717
+      spriteID: 53dbc10d915984fab86a05e411766b66
+      internalID: -1985281482
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TILE_TOP_DOWN_RIGHT
+      name: "tiles_\u041C\u043E\u043D\u0442\u0430\u0436\u043D\u0430\u044F \u043E\u0431\u043B\u0430\u0441\u0442\u044C
+        1_3"
       rect:
         serializedVersion: 2
         x: 0
         y: 540
-        width: 270.25
+        width: 270
         height: 270
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -193,19 +197,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d2af2480c64b14356ab239522cc41ed3
-      internalID: 1228413913
+      spriteID: 6d32d327386084879aa1b494f1a42d10
+      internalID: -88744113
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TILE_CROSS
+      name: "tiles_\u041C\u043E\u043D\u0442\u0430\u0436\u043D\u0430\u044F \u043E\u0431\u043B\u0430\u0441\u0442\u044C
+        1_4"
       rect:
         serializedVersion: 2
         x: 270
         y: 540
-        width: 270.25
+        width: 270
         height: 270
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -214,19 +219,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f48c6eda1365546329041089abfc2ea8
-      internalID: 1678642178
+      spriteID: fa463940dc1374b518ef1709d6621866
+      internalID: 1969905030
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TILE_TOP_LEFT_DOWN
+      name: "tiles_\u041C\u043E\u043D\u0442\u0430\u0436\u043D\u0430\u044F \u043E\u0431\u043B\u0430\u0441\u0442\u044C
+        1_5"
       rect:
         serializedVersion: 2
         x: 540
         y: 540
-        width: 270.25
+        width: 270
         height: 270
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -235,18 +241,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 350f00e7e633b4b8c99d8db57738e96d
-      internalID: 328630194
+      spriteID: 2bd6b4509d5ac4a2a977a5980b1f770d
+      internalID: 420357625
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TILE_LEFT_RIGHT
+      name: "tiles_\u041C\u043E\u043D\u0442\u0430\u0436\u043D\u0430\u044F \u043E\u0431\u043B\u0430\u0441\u0442\u044C
+        1_6"
       rect:
         serializedVersion: 2
         x: 810
-        y: 542
+        y: 540
         width: 270
         height: 270
       alignment: 0
@@ -256,19 +263,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0f386c4923d194aabae27fff80987fc6
-      internalID: 1803422837
+      spriteID: 43f63c55b6a6e46078546db643c31f5c
+      internalID: 146968448
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TILE_TOP_RIGHT
+      name: "tiles_\u041C\u043E\u043D\u0442\u0430\u0436\u043D\u0430\u044F \u043E\u0431\u043B\u0430\u0441\u0442\u044C
+        1_7"
       rect:
         serializedVersion: 2
         x: 0
         y: 270
-        width: 270.25
+        width: 270
         height: 270
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -277,14 +285,15 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cfcd6b5e325c94d42948b5d79b8cb8ba
-      internalID: 1054554180
+      spriteID: 7e7b3b8390690445d8b383121175ab3a
+      internalID: 1405040330
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TILE_TOP_LEFT_RIGHT
+      name: "tiles_\u041C\u043E\u043D\u0442\u0430\u0436\u043D\u0430\u044F \u043E\u0431\u043B\u0430\u0441\u0442\u044C
+        1_8"
       rect:
         serializedVersion: 2
         x: 270
@@ -298,19 +307,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9c5b0c591de984089b8798e57ee6eea4
-      internalID: -1632069714
+      spriteID: 8b725a8546f904bfa8fd307439846560
+      internalID: -1136180643
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TILE_TOP_LEFT
+      name: "tiles_\u041C\u043E\u043D\u0442\u0430\u0436\u043D\u0430\u044F \u043E\u0431\u043B\u0430\u0441\u0442\u044C
+        1_9"
       rect:
         serializedVersion: 2
         x: 540
         y: 270
-        width: 270.25
+        width: 270
         height: 270
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -319,14 +329,15 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c9731b9bb100445c2bf434b85d8abbfb
-      internalID: 315144752
+      spriteID: 62c1c8d9f23654cbe9a02050f3b83d8e
+      internalID: 1680555528
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TILE_TOP_DOWN
+      name: "tiles_\u041C\u043E\u043D\u0442\u0430\u0436\u043D\u0430\u044F \u043E\u0431\u043B\u0430\u0441\u0442\u044C
+        1_10"
       rect:
         serializedVersion: 2
         x: 270
@@ -340,8 +351,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2431c5b98158247dbabede9d5f331530
-      internalID: -128674488
+      spriteID: 31ca232eb05b844c79d35349bce01b0d
+      internalID: 761196116
       vertices: []
       indices: 
       edges: []
@@ -357,18 +368,17 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      TILE_CROSS: 1678642178
-      TILE_RIGHT_DOWN: 770037969
-      TILE_TOP_LEFT_DOWN: 328630194
-      TILE_TOP_RIGHT: 1054554180
-      none_Tile: -1935263371
-      TILE_LEFT_RIGHT_DOWN: 491561182
-      TILE_TOP_DOWN_RIGHT: 1228413913
-      TILE_TOP_LEFT_RIGHT: -1632069714
-      TILE_TOP_DOWN: -128674488
-      TILE_LEFT_RIGHT: 1803422837
-      TILE_TOP_LEFT: 315144752
-      TILE_LEFT_DOWN: -28301717
+      "tiles_\u041C\u043E\u043D\u0442\u0430\u0436\u043D\u0430\u044F \u043E\u0431\u043B\u0430\u0441\u0442\u044C 1_1": -1890619354
+      "tiles_\u041C\u043E\u043D\u0442\u0430\u0436\u043D\u0430\u044F \u043E\u0431\u043B\u0430\u0441\u0442\u044C 1_9": 1680555528
+      "tiles_\u041C\u043E\u043D\u0442\u0430\u0436\u043D\u0430\u044F \u043E\u0431\u043B\u0430\u0441\u0442\u044C 1_10": 761196116
+      "tiles_\u041C\u043E\u043D\u0442\u0430\u0436\u043D\u0430\u044F \u043E\u0431\u043B\u0430\u0441\u0442\u044C 1_0": 1327560778
+      "tiles_\u041C\u043E\u043D\u0442\u0430\u0436\u043D\u0430\u044F \u043E\u0431\u043B\u0430\u0441\u0442\u044C 1_7": 1405040330
+      "tiles_\u041C\u043E\u043D\u0442\u0430\u0436\u043D\u0430\u044F \u043E\u0431\u043B\u0430\u0441\u0442\u044C 1_8": -1136180643
+      "tiles_\u041C\u043E\u043D\u0442\u0430\u0436\u043D\u0430\u044F \u043E\u0431\u043B\u0430\u0441\u0442\u044C 1_5": 420357625
+      "tiles_\u041C\u043E\u043D\u0442\u0430\u0436\u043D\u0430\u044F \u043E\u0431\u043B\u0430\u0441\u0442\u044C 1_3": -88744113
+      "tiles_\u041C\u043E\u043D\u0442\u0430\u0436\u043D\u0430\u044F \u043E\u0431\u043B\u0430\u0441\u0442\u044C 1_2": -1985281482
+      "tiles_\u041C\u043E\u043D\u0442\u0430\u0436\u043D\u0430\u044F \u043E\u0431\u043B\u0430\u0441\u0442\u044C 1_6": 146968448
+      "tiles_\u041C\u043E\u043D\u0442\u0430\u0436\u043D\u0430\u044F \u043E\u0431\u043B\u0430\u0441\u0442\u044C 1_4": 1969905030
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

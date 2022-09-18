@@ -8,8 +8,11 @@ using UnityEngine;
 public class LightController : MonoBehaviour
 {
     [SerializeField] private FireFly prefab;
+    [SerializeField]
     private List<FireFly> _activeFireFlies;
+    [SerializeField]
     private List<FireFly> _inRoadFireFlies;
+    [SerializeField]
     private List<FireFly> _inactiveFireFlies;
     [SerializeField] private Camera camera;
     [SerializeField] private int startMaxPLayerLights = 4;
@@ -25,6 +28,18 @@ public class LightController : MonoBehaviour
         _activeFireFlies = new List<FireFly>();
         _inactiveFireFlies = new List<FireFly>();
         _inRoadFireFlies = new List<FireFly>();
+        TileColliderSetter.onLightAdded += AddStaticLight;
+        TileColliderSetter.onLightRemoved += RemoveStaticLight;
+    }
+
+    private void OnDestroy()
+    {
+        TileColliderSetter.onLightAdded -= AddStaticLight;
+        TileColliderSetter.onLightRemoved += RemoveStaticLight;
+    }
+
+    private void Start()
+    {
         animController.SetNumber(4);
     }
 
@@ -200,6 +215,16 @@ public class LightController : MonoBehaviour
         areasCenters.AddRange(_activeFireFlies.Select(c => (Vector2)c.transform.position));
         areasCenters.AddRange(staticBonusLights.Select(c => (Vector2)c.position));
         return areasCenters;
+    }
+
+    private void AddStaticLight(Transform transform)
+    {
+        staticBonusLights.Add(transform);
+    }
+
+    private void RemoveStaticLight(Transform transform)
+    {
+        staticBonusLights.Remove(transform);
     }
 
     [Serializable]

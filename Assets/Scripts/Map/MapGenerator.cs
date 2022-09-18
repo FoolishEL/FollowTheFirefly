@@ -1,7 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -13,6 +13,9 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private Vector2Int playerPosition;
 
     [SerializeField] private int corePointsCount = 3;
+
+    [SerializeField] private Transform playerTransform;
+    [SerializeField] private float regenTime = 10f;
 
     private List<Vector2Int> corePoint;
     private List<Vector2Int> mainRoad;
@@ -26,15 +29,29 @@ public class MapGenerator : MonoBehaviour
 
     [SerializeField] private MapBuilder mapBuilder;
 
-    private void Awake()
+    private void Start()
     {
+        Vector3 playerSpawnPosition = new Vector3(startPosition.x * MapGeneratorConstants.POSITION_SCALE_MODIFICATOR,
+            startPosition.y * MapGeneratorConstants.POSITION_SCALE_MODIFICATOR, playerTransform.position.z);
+        playerTransform.position = playerSpawnPosition;
+        playerPosition = startPosition;
         GenerateMap();
+        StartCoroutine(RegeneratorTimer());
+    }
+
+    private IEnumerator RegeneratorTimer()
+    {
+        WaitForSeconds awaitor = new WaitForSeconds(regenTime);
+        while (isActiveAndEnabled)
+        {
+            yield return awaitor;
+            RegenerateMap();
+        }
     }
 
     [ContextMenu(nameof(GenerateMap))]
     private void GenerateMap()
     {
-        DestroyAllChildren();
         map = new int[size.x, size.y];
         mappingSize = size.x * size.y;
         connectionMap = new int[mappingSize, mappingSize];
@@ -42,7 +59,17 @@ public class MapGenerator : MonoBehaviour
         paths = new int[mappingSize, mappingSize];
         map[startPosition.x, startPosition.y] = MapGeneratorConstants.START_ID;
         map[exitPosition.x, exitPosition.y] = MapGeneratorConstants.EXIT_ID;
-        map[playerPosition.x, playerPosition.y] = MapGeneratorConstants.PLAYER_ID;
+        if (playerPosition == startPosition)
+            map[playerPosition.x, playerPosition.y] = MapGeneratorConstants.PLAYER_ID_AND_START;
+        else
+        {
+            if (playerPosition == exitPosition)
+                map[playerPosition.x, playerPosition.y] = MapGeneratorConstants.PLAYER_ID_AND_EXIT;
+            else
+            {
+                map[playerPosition.x, playerPosition.y] = MapGeneratorConstants.PLAYER_ID;
+            }
+        }
         CreateRoads();
         Visualze();
     }
@@ -375,17 +402,34 @@ public class MapGenerator : MonoBehaviour
         mapBuilder.Initialize(size, transform, map, mainRoad, startPosition, exitPosition, playerPosition, playerRoad);
         mapBuilder.Vizualize();
     }
-
-    [ContextMenu(nameof(DestroyAllChildren))]
-    private void DestroyAllChildren()
+    private List<Vector2Int> GetPath(Vector2Int start, Vector2Int end)
     {
-        var children = GetComponentsInChildren<Transform>(false).ToList();
-        children.RemoveAt(0);
-        foreach (var item in children)
+        int position = GetIdByPosition(start.x, start.y);
+        int endPosition = GetIdByPosition(end.x, end.y);
+        List<Vector2Int> result = new();
+        if (tempMap[position, endPosition] == Int32.MaxValue / 3)
         {
-            DestroyImmediate(item.gameObject);
+            return result;
         }
+
+        while (position != endPosition)
+        {
+            result.Add(GetPositionById(position));
+            position = paths[position, endPosition];
+        }
+
+        result.Add(GetPositionById(endPosition));
+        return result;
     }
+
+    [ContextMenu(nameof(RegenerateMap))]
+    private void RegenerateMap()
+    {
+        playerPosition = mapBuilder.GetTilePositionByWorldPosition(playerTransform.position);
+        GenerateMap();
+    }
+    
+    #region unused
     #if false
     [SerializeField] private bool showPath = false;
 
@@ -418,24 +462,5 @@ public class MapGenerator : MonoBehaviour
         }
     }
 #endif
-
-    private List<Vector2Int> GetPath(Vector2Int start, Vector2Int end)
-    {
-        int position = GetIdByPosition(start.x, start.y);
-        int endPosition = GetIdByPosition(end.x, end.y);
-        List<Vector2Int> result = new();
-        if (tempMap[position, endPosition] == Int32.MaxValue / 3)
-        {
-            return result;
-        }
-
-        while (position != endPosition)
-        {
-            result.Add(GetPositionById(position));
-            position = paths[position, endPosition];
-        }
-
-        result.Add(GetPositionById(endPosition));
-        return result;
-    }
+    #endregion
 }
