@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Spine.Unity;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class LightController : MonoBehaviour
@@ -22,6 +23,7 @@ public class LightController : MonoBehaviour
     [SerializeField] private Transform playerTransform;
     [SerializeField] private Transform lampTransform;
     [SerializeField] private AnimationForLantern animController;
+    public event Action onActiveLightPositionChanged = delegate { };
 
     private void Awake()
     {
@@ -194,6 +196,7 @@ public class LightController : MonoBehaviour
         }
         _inRoadFireFlies.Remove(fireFly);
         _activeFireFlies.Add(fireFly);
+        onActiveLightPositionChanged.Invoke();
     }
 
     private IEnumerator PlaceIntoInactiveAwaitor(FireFly fireFly)

@@ -28,6 +28,7 @@ public class MapGenerator : MonoBehaviour
     private int mappingSize;
 
     [SerializeField] private MapBuilder mapBuilder;
+    [SerializeField] private MonsterSpawner monsterSpawner;
 
     private void Start()
     {
@@ -35,6 +36,7 @@ public class MapGenerator : MonoBehaviour
             startPosition.y * MapGeneratorConstants.POSITION_SCALE_MODIFICATOR, playerTransform.position.z);
         playerTransform.position = playerSpawnPosition;
         playerPosition = startPosition;
+        monsterSpawner.SpawnMonsters();
         GenerateMap();
         StartCoroutine(RegeneratorTimer());
     }

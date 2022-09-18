@@ -582,33 +582,35 @@ MonoBehaviour:
   startPosition: {x: 5, y: 5}
   exitPosition: {x: 1, y: 7}
   playerPosition: {x: 0, y: 0}
-  corePointsCount: 4
+  corePointsCount: 2
   playerTransform: {fileID: 1800598060}
+  regenTime: 60
   mapBuilder:
     spriteRenderer: {fileID: 4002447799579872213, guid: 9a3835242a96c4c19966c55150365d48, type: 3}
     sidedImages:
     - Side: 6
-      Image: {fileID: 1680555528, guid: cbe4d04f708e04aaba7ede20edbdff2e, type: 3}
+      Image: {fileID: -1419940108, guid: a32044d8e4a003e41bbb1ef728dd011d, type: 3}
     - Side: 14
-      Image: {fileID: -1136180643, guid: cbe4d04f708e04aaba7ede20edbdff2e, type: 3}
+      Image: {fileID: 1202192691, guid: a32044d8e4a003e41bbb1ef728dd011d, type: 3}
     - Side: 10
-      Image: {fileID: 1405040330, guid: cbe4d04f708e04aaba7ede20edbdff2e, type: 3}
+      Image: {fileID: -589982612, guid: a32044d8e4a003e41bbb1ef728dd011d, type: 3}
     - Side: 7
-      Image: {fileID: 420357625, guid: cbe4d04f708e04aaba7ede20edbdff2e, type: 3}
+      Image: {fileID: -1145658805, guid: a32044d8e4a003e41bbb1ef728dd011d, type: 3}
     - Side: -1
-      Image: {fileID: 1969905030, guid: cbe4d04f708e04aaba7ede20edbdff2e, type: 3}
+      Image: {fileID: 229799314, guid: a32044d8e4a003e41bbb1ef728dd011d, type: 3}
     - Side: 11
-      Image: {fileID: -88744113, guid: cbe4d04f708e04aaba7ede20edbdff2e, type: 3}
+      Image: {fileID: 509003033, guid: a32044d8e4a003e41bbb1ef728dd011d, type: 3}
     - Side: 12
-      Image: {fileID: 146968448, guid: cbe4d04f708e04aaba7ede20edbdff2e, type: 3}
+      Image: {fileID: -698666849, guid: a32044d8e4a003e41bbb1ef728dd011d, type: 3}
     - Side: 5
-      Image: {fileID: -1985281482, guid: cbe4d04f708e04aaba7ede20edbdff2e, type: 3}
+      Image: {fileID: 1989785708, guid: a32044d8e4a003e41bbb1ef728dd011d, type: 3}
     - Side: 13
-      Image: {fileID: -1890619354, guid: cbe4d04f708e04aaba7ede20edbdff2e, type: 3}
+      Image: {fileID: 1738130644, guid: a32044d8e4a003e41bbb1ef728dd011d, type: 3}
     - Side: 9
-      Image: {fileID: 1327560778, guid: cbe4d04f708e04aaba7ede20edbdff2e, type: 3}
+      Image: {fileID: 968707863, guid: a32044d8e4a003e41bbb1ef728dd011d, type: 3}
     - Side: 3
-      Image: {fileID: 761196116, guid: cbe4d04f708e04aaba7ede20edbdff2e, type: 3}
+      Image: {fileID: -73143697, guid: a32044d8e4a003e41bbb1ef728dd011d, type: 3}
+  monsterSpawner: {fileID: 2023424777}
 --- !u!4 &647634188
 Transform:
   m_ObjectHideFlags: 0
@@ -1187,3 +1189,53 @@ CircleCollider2D:
   m_Offset: {x: -0.022558272, y: -0.23674211}
   serializedVersion: 2
   m_Radius: 0.10825786
+--- !u!1 &2023424776
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2023424778}
+  - component: {fileID: 2023424777}
+  m_Layer: 0
+  m_Name: MonsterSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2023424777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2023424776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a09e9c2ccb814c4f854d4d9c62afd26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 5226690827618181830, guid: 4bbd66e7e3b37487a881940d2f491a2a, type: 3}
+  monstersCount: 1
+  playerTransform: {fileID: 1800598060}
+  minRange: 1
+  maxRange: 2
+  lightController: {fileID: 477639697}
+--- !u!4 &2023424778
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2023424776}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 16.86543, y: 15.234432, z: 1.979282}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
