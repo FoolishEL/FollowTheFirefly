@@ -19,14 +19,14 @@ public class HouseVisual : MonoBehaviour
 
     private void OnWinGame()
     {
-        winText.SetActive(false);
+        winText.SetActive(true);
         EndAwaiter();
     }
 
     private async UniTask EndAwaiter()
     {
         GameManager.Instance.isPlaying = false;
-        await UniTask.Delay(TimeSpan.FromSeconds(2f));
+        await UniTask.Delay(TimeSpan.FromSeconds(2f), DelayType.Realtime);
         GameManager.Instance.ToMainMenu();
     }
 }

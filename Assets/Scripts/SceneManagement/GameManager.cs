@@ -1,8 +1,10 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] private AudioSource _audioSource;
     public static GameManager Instance { get; private set; }
     public bool isPlaying = false;
     public bool hasCompas = false;
@@ -28,8 +30,18 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            _audioSource.Play();
         }
     }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ToMainMenu();
+        }
+    }
+
     public void StartGame()
     {
         if(SceneManager.GetActiveScene().name == gameSceneName)
