@@ -29,6 +29,7 @@ public class MapGenerator : MonoBehaviour
 
     [SerializeField] private MapBuilder mapBuilder;
     [SerializeField] private MonsterSpawner monsterSpawner;
+    [SerializeField] private LightController lightController;
 
     private void Start()
     {
@@ -48,13 +49,19 @@ public class MapGenerator : MonoBehaviour
         {
             yield return awaitor;
             if (isActiveAndEnabled && GameManager.Instance.isPlaying)
-                RegenerateMap();
+                GenerateMap();
         }
     }
-
     [ContextMenu(nameof(GenerateMap))]
     private void GenerateMap()
     {
+        bool isFirstTime = true;
+        if (map != null)
+        {
+            isFirstTime = false;
+            playerPosition = mapBuilder.GetTilePositionByWorldPosition(playerTransform.position);
+        }
+
         map = new int[size.x, size.y];
         mappingSize = size.x * size.y;
         connectionMap = new int[mappingSize, mappingSize];
@@ -73,11 +80,35 @@ public class MapGenerator : MonoBehaviour
                 map[playerPosition.x, playerPosition.y] = MapGeneratorConstants.PLAYER_ID;
             }
         }
-        CreateRoads();
+        CreateRoads(isFirstTime ? 2f : 4f);
+        PrepareMapping();
+        if (!isFirstTime)
+        {
+            List<Vector2Int> positionsToSave = new List<Vector2Int>();
+            foreach (var item in lightController.GetWalkableArea(out var range))
+            {
+                positionsToSave.AddRange(mapBuilder.GetTilesInRange(item, range));
+            }
+
+            if (positionsToSave.Count == 0)
+            {
+                Debug.LogError("bad");
+                positionsToSave.AddRange(mapBuilder.GetTilesInRange(playerTransform.position, 1.6f));
+            }
+            if (positionsToSave.Count == 0)
+            {
+                Debug.LogError("pzdc!");
+                GenerateMap();
+                return;
+            }
+            mapBuilder.UpdateMap(positionsToSave, connectionMap);
+        }
+        GeneratePath();
+        ConnectPlayer();
         Visualze();
     }
 
-    private void CreateRoads()
+    private void CreateRoads(float distance)
     {
         corePoint = new List<Vector2Int>();
         for (int i = 0; i < corePointsCount; i++)
@@ -97,7 +128,7 @@ public class MapGenerator : MonoBehaviour
 
             if (corePoint.Any(c => Vector2Int.Distance(c, randomPosition) < 2f) ||
                 Vector2Int.Distance(startPosition, randomPosition) < 2f ||
-                Vector2Int.Distance(playerPosition, randomPosition) < 2f ||
+                Vector2Int.Distance(playerPosition, randomPosition) < distance ||
                 Vector2Int.Distance(exitPosition, randomPosition) < 2f)
             {
                 i--;
@@ -107,10 +138,6 @@ public class MapGenerator : MonoBehaviour
             corePoint.Add(randomPosition);
             map[corePoint[i].x, corePoint[i].y] = MapGeneratorConstants.CORE_POINT;
         }
-
-        PrepareMapping();
-        GeneratePath();
-        ConnectPlayer();
     }
 
     private void ConnectPlayer()
@@ -184,17 +211,6 @@ public class MapGenerator : MonoBehaviour
                 connectionMap[i, GetIdByPosition(position.x, position.y - 1)] = 1;
             }
         }
-
-        //TODO: optional!
-        for (int i = 0; i < corePoint.Count; i++)
-        {
-            for (int j = 0; j < corePoint.Count; j++)
-            {
-                //TODO: optional!
-                connectionMap[GetIdByPosition(corePoint[i].x, corePoint[i].y),
-                    GetIdByPosition(corePoint[j].x, corePoint[j].y)] = Int32.MaxValue / 3;
-            }
-        }
     }
 
     private void RegenerateDxtra()
@@ -225,9 +241,18 @@ public class MapGenerator : MonoBehaviour
         RegenerateDxtra();
         mainRoad = new List<Vector2Int>();
         List<Vector2Int> roadPart = new List<Vector2Int>();
-        roadPart = GetPath(startPosition, corePoint[0]);
+        for (int i = 0; i < corePoint.Count; i++)
+        {
+            roadPart = GetPath(startPosition, corePoint[0]);
+            if (roadPart.Count == 0)
+            {
+                corePoint.Add(new Vector2Int(corePoint[0].x, corePoint[0].y));
+                corePoint.RemoveAt(0);
+            }
+        }
         mainRoad.AddRange(roadPart);
-        EncloseRoad(roadPart);
+        if (roadPart.Count != 0)
+            EncloseRoad(roadPart);
         RegenerateDxtra();
         for (int i = 0; i < corePoint.Count - 1; i++)
         {
@@ -426,12 +451,232 @@ public class MapGenerator : MonoBehaviour
     }
 
     [ContextMenu(nameof(RegenerateMap))]
+
+    #region Test
+
+        /*private void RegenerateMap()
+    {
+        List<Vector2Int> positionsToSave = new List<Vector2Int>();
+        foreach (var item in lightController.GetWalkableArea(out var range))
+        {
+            positionsToSave.AddRange(mapBuilder.GetTilesInRange(item, range));
+        }
+
+        if (positionsToSave.Count == 0)
+        {
+            positionsToSave.AddRange(mapBuilder.GetTilesInRange(playerTransform.position, 1.6f));
+        }
+        if (positionsToSave.Count == 0)
+        {
+            Debug.LogError("pzdc!");
+            GenerateMap();
+            return;
+        }
+        
+        playerPosition = mapBuilder.GetTilePositionByWorldPosition(playerTransform.position);
+        map = new int[size.x, size.y];
+        mappingSize = size.x * size.y;
+        paths = new int[mappingSize, mappingSize];
+        map[startPosition.x, startPosition.y] = MapGeneratorConstants.START_ID;
+        map[exitPosition.x, exitPosition.y] = MapGeneratorConstants.EXIT_ID;
+        map[startPosition.x, startPosition.y] = MapGeneratorConstants.START_ID;
+        map[exitPosition.x, exitPosition.y] = MapGeneratorConstants.EXIT_ID;
+        if (playerPosition == startPosition)
+            map[playerPosition.x, playerPosition.y] = MapGeneratorConstants.PLAYER_ID_AND_START;
+        else
+        {
+            if (playerPosition == exitPosition)
+                map[playerPosition.x, playerPosition.y] = MapGeneratorConstants.PLAYER_ID_AND_EXIT;
+            else
+            {
+                map[playerPosition.x, playerPosition.y] = MapGeneratorConstants.PLAYER_ID;
+            }
+        }
+        
+        PrepareMapping();
+        foreach (var position in positionsToSave)
+        {
+            if (position.x + 1 < size.x)
+            {
+                connectionMap[GetIdByPosition(position.x, position.y),
+                    GetIdByPosition(position.x + 1, position.y)] = tempMap[GetIdByPosition(position.x, position.y),
+                    GetIdByPosition(position.x, position.y + 1)];
+                connectionMap[GetIdByPosition(position.x + 1, position.y),
+                    GetIdByPosition(position.x, position.y)] = tempMap[GetIdByPosition(position.x + 1, position.y),
+                    GetIdByPosition(position.x, position.y)];
+            }
+
+            if (position.x - 1 >= 0)
+            {
+                connectionMap[GetIdByPosition(position.x, position.y),
+                    GetIdByPosition(position.x - 1, position.y)] = tempMap[GetIdByPosition(position.x, position.y),
+                    GetIdByPosition(position.x - 1, position.y)];
+                connectionMap[GetIdByPosition(position.x - 1, position.y),
+                    GetIdByPosition(position.x, position.y)] = tempMap[GetIdByPosition(position.x - 1, position.y),
+                    GetIdByPosition(position.x, position.y)];
+            }
+
+            if (position.y + 1 < size.y)
+            {
+                connectionMap[GetIdByPosition(position.x, position.y),
+                    GetIdByPosition(position.x, position.y + 1)] = tempMap[GetIdByPosition(position.x, position.y),
+                    GetIdByPosition(position.x, position.y + 1)];
+                connectionMap[GetIdByPosition(position.x, position.y + 1),
+                    GetIdByPosition(position.x, position.y)] = tempMap[GetIdByPosition(position.x, position.y + 1),
+                    GetIdByPosition(position.x, position.y)];
+            }
+
+            if (position.y - 1 >= 0)
+            {
+                connectionMap[GetIdByPosition(position.x, position.y),
+                    GetIdByPosition(position.x, position.y - 1)] = tempMap[GetIdByPosition(position.x, position.y),
+                    GetIdByPosition(position.x, position.y - 1)];
+                connectionMap[GetIdByPosition(position.x, position.y - 1),
+                    GetIdByPosition(position.x, position.y)] = tempMap[GetIdByPosition(position.x, position.y - 1),
+                    GetIdByPosition(position.x, position.y)];
+            }
+
+            if (position != startPosition && position != exitPosition && position != playerPosition)
+            {
+                map[position.x, position.y] = MapGeneratorConstants.ROAD_ID;
+            }
+        }
+        CreateCorePoints(positionsToSave);
+        for (int i = 0; i < corePointsCount-2; i++)
+        {
+            var randomVector = Random.insideUnitCircle;
+            randomVector.x = Mathf.Abs(randomVector.x);
+            randomVector.y = Mathf.Abs(randomVector.y);
+            randomVector.x *= size.x;
+            randomVector.y *= size.y;
+            var randomPosition = new Vector2Int((int)randomVector.x, (int)randomVector.y);
+            if (corePoint.Any(c => c.Equals(randomPosition)) || randomPosition.Equals(startPosition) ||
+                randomPosition.Equals(playerPosition) || randomPosition.Equals(exitPosition))
+            {
+                i--;
+                continue;
+            }
+
+            if (corePoint.Any(c => Vector2Int.Distance(c, randomPosition) < 2f) ||
+                Vector2Int.Distance(startPosition, randomPosition) < 2f ||
+                Vector2Int.Distance(playerPosition, randomPosition) < 2f ||
+                Vector2Int.Distance(exitPosition, randomPosition) < 2f)
+            {
+                i--;
+                continue;
+            }
+
+            corePoint.Add(randomPosition);
+            map[corePoint[i].x, corePoint[i].y] = MapGeneratorConstants.CORE_POINT;
+        }
+        GeneratePath();
+        ConnectPlayer();
+        Visualze();
+    }
+*/
+    #endregion
     private void RegenerateMap()
     {
         playerPosition = mapBuilder.GetTilePositionByWorldPosition(playerTransform.position);
-        GenerateMap();
+        List<Vector2Int> positionsToSave = new List<Vector2Int>();
+        foreach (var item in lightController.GetWalkableArea(out var range))
+        {
+            positionsToSave.AddRange(mapBuilder.GetTilesInRange(item, range));
+        }
+
+        if (positionsToSave.Count == 0)
+        {
+            Debug.LogError("bad");
+            positionsToSave.AddRange(mapBuilder.GetTilesInRange(playerTransform.position, 1.6f));
+        }
+        if (positionsToSave.Count == 0)
+        {
+            Debug.LogError("pzdc!");
+            GenerateMap();
+            return;
+        }
+        
+        
+        map = new int[size.x, size.y];
+        mappingSize = size.x * size.y;
+        connectionMap = new int[mappingSize, mappingSize];
+        tempMap = new int[mappingSize, mappingSize];
+        paths = new int[mappingSize, mappingSize];
+        map[startPosition.x, startPosition.y] = MapGeneratorConstants.START_ID;
+        map[exitPosition.x, exitPosition.y] = MapGeneratorConstants.EXIT_ID;
+        if (playerPosition == startPosition)
+            map[playerPosition.x, playerPosition.y] = MapGeneratorConstants.PLAYER_ID_AND_START;
+        else
+        {
+            if (playerPosition == exitPosition)
+                map[playerPosition.x, playerPosition.y] = MapGeneratorConstants.PLAYER_ID_AND_EXIT;
+            else
+            {
+                map[playerPosition.x, playerPosition.y] = MapGeneratorConstants.PLAYER_ID;
+            }
+        }
+        PrepareMapping();
+        CreateCorePoints(positionsToSave);
+        for (int i = 0; i < corePointsCount-2; i++)
+        {
+            var randomVector = Random.insideUnitCircle;
+            randomVector.x = Mathf.Abs(randomVector.x);
+            randomVector.y = Mathf.Abs(randomVector.y);
+            randomVector.x *= size.x;
+            randomVector.y *= size.y;
+            var randomPosition = new Vector2Int((int)randomVector.x, (int)randomVector.y);
+            if (corePoint.Any(c => c.Equals(randomPosition)) || randomPosition.Equals(startPosition) ||
+                randomPosition.Equals(playerPosition) || randomPosition.Equals(exitPosition))
+            {
+                i--;
+                continue;
+            }
+
+            if (corePoint.Any(c => Vector2Int.Distance(c, randomPosition) < 2f) ||
+                Vector2Int.Distance(startPosition, randomPosition) < 2f ||
+                Vector2Int.Distance(playerPosition, randomPosition) < 2f ||
+                Vector2Int.Distance(exitPosition, randomPosition) < 2f)
+            {
+                i--;
+                continue;
+            }
+
+            corePoint.Add(randomPosition);
+            map[corePoint[i].x, corePoint[i].y] = MapGeneratorConstants.CORE_POINT;
+        }
+        mapBuilder.UpdateMap(positionsToSave, connectionMap);
+        GeneratePath();
+        ConnectPlayer();
+        Visualze();
+
     }
-    
+
+    private void CreateCorePoints(List<Vector2Int> positionsToSave)
+    {
+        corePoint.Clear();
+        for (int i = 0; i < positionsToSave.Count; i++)
+        {
+            int connections = 0;
+            for (int j = 0; j < positionsToSave.Count; j++)
+            {
+                if(i==j)
+                    continue;
+                if ((positionsToSave[i] - positionsToSave[j]).magnitude < 1.1f)
+                {
+                    connections++;
+                    if (connections > 1)
+                        break;
+                }
+            }
+
+            if (connections <= 1)
+            {
+                corePoint.Add(positionsToSave[i]);
+                map[positionsToSave[i].x, positionsToSave[i].y] = MapGeneratorConstants.CORE_POINT;
+            }
+        }
+    }
+
     #region unused
     #if false
     [SerializeField] private bool showPath = false;

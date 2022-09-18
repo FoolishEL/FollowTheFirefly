@@ -54,6 +54,35 @@ public class MapBuilder
         return result;
     }
 
+    public List<Vector2Int> GetTilesInRange(Vector2 worldPosition, float range)
+    {
+        Vector2 positionTile;
+        List<Vector2Int> result = new List<Vector2Int>();
+        List<Vector2> checkPositions = new List<Vector2>();
+        for (int i = 0; i < _size.x; i++)
+        {
+            for (int j = 0; j < _size.y; j++)
+            {
+                if(_mapVizual[i, j].Item2 == Sides.None)
+                    continue;
+                checkPositions.Clear();
+                positionTile = _mapVizual[i, j].Item1.transform.position;
+                checkPositions.Add(positionTile);
+                checkPositions.Add(positionTile + Vector2.up*2);
+                checkPositions.Add(positionTile + Vector2.down*2);
+                checkPositions.Add(positionTile + Vector2.left*2);
+                checkPositions.Add(positionTile + Vector2.right*2);
+                checkPositions.Add(positionTile + Vector2.up*2 + Vector2.right*2);
+                checkPositions.Add(positionTile + Vector2.up*2 + Vector2.left*2);
+                checkPositions.Add(positionTile + Vector2.down*2 + Vector2.right*2);
+                checkPositions.Add(positionTile + Vector2.down*2 + Vector2.left*2);
+                if (checkPositions.Any(c => Vector2.Distance(c, worldPosition) < range))
+                    result.Add(new Vector2Int(i, j));
+            }
+        }
+        return result;
+    }
+
     public void Vizualize()
     {
         if (isNewMap)
@@ -68,6 +97,7 @@ public class MapBuilder
                     _mapVizual[i, j].Item1.transform.position =
                         new Vector3(i * MapGeneratorConstants.POSITION_SCALE_MODIFICATOR,
                             j * MapGeneratorConstants.POSITION_SCALE_MODIFICATOR);
+                    _mapVizual[i, j].Item1.name = $"TILE ({i},{j})";
                 }
                 else
                 {
@@ -75,11 +105,6 @@ public class MapBuilder
                     _mapVizual[i, j].Item1.SetTileInfo(0);
                     _mapVizual[i, j].Item1.SpriteRenderer.sprite = null;
                     _mapVizual[i, j].Item2 = Sides.None;
-                }
-
-                if (_map[i, j] == MapGeneratorConstants.CORE_PATH_ID)
-                {
-                    _mapVizual[i, j].Item1.SpriteRenderer.color = Color.yellow;
                 }
             }
         }
@@ -101,14 +126,10 @@ public class MapBuilder
                     _mapVizual[i,j].Item1.SpriteRenderer.sprite = sprite;
                     _mapVizual[i,j].Item1.SetupColliders(_mapVizual[i,j].Item2);
                     _mapVizual[i, j].Item1.SetTileInfo(_map[i, j]);
-                    _mapVizual[i,j].Item1.SpriteRenderer.color = Color.white;
                 }
+                _mapVizual[i, j].Item1.SpriteRenderer.color = sprite != null ? Color.white : Color.black;
             }
         }
-
-        _mapVizual[_startPosition.x, _startPosition.y].Item1.SpriteRenderer.color = Color.blue;
-        _mapVizual[_exitPosition.x, _exitPosition.y].Item1.SpriteRenderer.color = Color.red;
-        _mapVizual[_playerPosition.x, _playerPosition.y].Item1.SpriteRenderer.color = Color.green;
         isNewMap = false;
     }
 
@@ -206,6 +227,61 @@ public class MapBuilder
         }
 
         return null;
+    }
+
+    public void UpdateMap(List<Vector2Int> positionsToSave,int[,] connectionMap)
+    {
+        foreach (var item in positionsToSave)
+        {
+            var side = _mapVizual[item.x, item.y].Item2;
+            if (item.y - 1 >= 0)
+            {
+                connectionMap[GetIdByPosition(item), GetIdByPosition(item.x, item.y - 1)] =
+                    side.HasFlag(Sides.Down) ? int.MaxValue / 3 : 1;
+                connectionMap[GetIdByPosition(item.x, item.y - 1),GetIdByPosition(item)] =
+                    side.HasFlag(Sides.Down) ? int.MaxValue / 3 : 1;
+            }
+
+            if (item.y + 1 < _size.y)
+            {
+                connectionMap[GetIdByPosition(item), GetIdByPosition(item.x, item.y + 1)] =
+                    side.HasFlag(Sides.Up) ? int.MaxValue / 3 : 1;
+                connectionMap[ GetIdByPosition(item.x, item.y + 1),GetIdByPosition(item)] =
+                    side.HasFlag(Sides.Up) ? int.MaxValue / 3 : 1;
+            }
+
+            if (item.x + 1 < _size.x)
+            {
+                connectionMap[GetIdByPosition(item), GetIdByPosition(item.x + 1, item.y)] =
+                    side.HasFlag(Sides.Right) ? 1 : int.MaxValue / 3;
+                connectionMap[GetIdByPosition(item.x + 1, item.y), GetIdByPosition(item)] =
+                    side.HasFlag(Sides.Right) ? 1 : int.MaxValue / 3;
+            }
+
+            if (item.x - 1 >= 0)
+            {
+                connectionMap[GetIdByPosition(item), GetIdByPosition(item.x - 1, item.y)] =
+                    side.HasFlag(Sides.Left) ? 1 : int.MaxValue / 3;
+                connectionMap[GetIdByPosition(item.x - 1, item.y), GetIdByPosition(item)] =
+                    side.HasFlag(Sides.Left) ? 1 : int.MaxValue / 3;
+            }
+        }
+    }
+    
+    private Vector2Int GetPositionById(int id)
+    {
+        var x = id / _size.y;
+        var y = id % _size.y;
+        return new Vector2Int(x, y);
+    }
+
+    private int GetIdByPosition(Vector2Int pos)
+    {
+        return pos.x * _size.y + pos.y;
+    }
+    private int GetIdByPosition(int x,int y)
+    {
+        return x * _size.y + y;
     }
 }
 

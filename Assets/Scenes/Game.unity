@@ -630,7 +630,7 @@ MonoBehaviour:
   startPosition: {x: 5, y: 5}
   exitPosition: {x: 1, y: 7}
   playerPosition: {x: 0, y: 0}
-  corePointsCount: 2
+  corePointsCount: 5
   playerTransform: {fileID: 1800598060}
   regenTime: 60
   mapBuilder:
@@ -639,7 +639,7 @@ MonoBehaviour:
     - Side: 6
       Image: {fileID: -885751265, guid: c0975034acf95c946a4d879d43937df4, type: 3}
     - Side: 14
-      Image: {fileID: 1735048810, guid: c0975034acf95c946a4d879d43937df4, type: 3}
+      Image: {fileID: 165663702, guid: c0975034acf95c946a4d879d43937df4, type: 3}
     - Side: 10
       Image: {fileID: 1580686103, guid: c0975034acf95c946a4d879d43937df4, type: 3}
     - Side: 7
@@ -659,6 +659,7 @@ MonoBehaviour:
     - Side: 3
       Image: {fileID: 1595796910, guid: c0975034acf95c946a4d879d43937df4, type: 3}
   monsterSpawner: {fileID: 2023424777}
+  lightController: {fileID: 477639697}
 --- !u!4 &647634188
 Transform:
   m_ObjectHideFlags: 0

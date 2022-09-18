@@ -172,17 +172,25 @@ public class LightController : MonoBehaviour
 
     private void FixFlies()
     {
-        if (_activeFireFlies.Distinct().Count() != _activeFireFlies.Count)
+        Debug.LogError("Fixing bugs!");
+        _activeFireFlies.Clear();
+        _inactiveFireFlies.Clear();
+        _inRoadFireFlies.Clear();
+        for (int i = 0; i < _allFlies.Count; i++)
         {
-            
-        }
-        if (_activeFireFlies.Distinct().Count() != _activeFireFlies.Count)
-        {
-            
-        }
-        if (_activeFireFlies.Distinct().Count() != _activeFireFlies.Count)
-        {
-            
+            if (_allFlies[i].IsMooving)
+                _inRoadFireFlies.Add(_allFlies[i]);
+            else
+            {
+                if (!_allFlies[i].gameObject.activeSelf)
+                {
+                    _inactiveFireFlies.Add(_allFlies[i]);
+                }
+                else
+                {
+                    _activeFireFlies.Add(_allFlies[i]);
+                }
+            }
         }
     }
 
