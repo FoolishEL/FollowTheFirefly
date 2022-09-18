@@ -9,6 +9,17 @@ public class GameManager : MonoBehaviour
     [SerializeField] private string menuSceneName = "Menu";
     [SerializeField] private string gameSceneName = "Game";
 
+    [SerializeField] private float playerSpeed = 3f;
+    public float PlayerSpeed => playerSpeed;
+    [SerializeField] private float flyToPlayer;
+    public float FlyToPlayer => flyToPlayer;
+    [SerializeField] private float flyFromPlayer;
+    public float FlyFromPlayer => flyFromPlayer;
+    [SerializeField] private float monsterTimeReagre;
+    public float MonsterTimeReagre => monsterTimeReagre;
+    [SerializeField] private float mapChangeTime;
+    public float MapChangeTime => mapChangeTime;
+
     private void Awake()
     {
         if (Instance != null)

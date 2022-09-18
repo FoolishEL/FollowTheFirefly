@@ -48,7 +48,7 @@ public class MonstersAi : MonoBehaviour
         }
 
         UpdateLightPositions();
-        StartCoroutine(SwitchMonstersPositions());
+        //StartCoroutine(SwitchMonstersPositions());
     }
 
     private IEnumerator SwitchMonstersPositions()
@@ -56,24 +56,7 @@ public class MonstersAi : MonoBehaviour
         WaitForSeconds awaitor = new WaitForSeconds(timePositionChange);
         while (isActiveAndEnabled)
         {
-            suitablePoses.Clear();
-            for (int i = 0; i < playerSurroundingMapSize; i++)
-            {
-                for (int j = 0; j < playerSurroundingMapSize; j++)
-                {
-                    bool isSutible = !_lightPositions.Any(c =>
-                        Vector2.Distance(c, _map[i, j].Item1 + (Vector2)playerTransform.position) <
-                        _range + additionalLightAvoidance);
-
-                    isSutible &= _lightPositions.Any(c =>
-                        Vector2.Distance(c, _map[i, j].Item1 + (Vector2)playerTransform.position) <
-                        _range + maxAdditionalDistance);
-
-                    _map[i, j].Item2 = isSutible;
-                    if (isSutible)
-                        suitablePoses.Add(_map[i, j].Item1);
-                }
-            }
+            CalculateSutiblePoses();
             foreach (var enemy in _enemies)
             {
                 Vector2 currentPosition = Vector2.zero;
@@ -95,6 +78,28 @@ public class MonstersAi : MonoBehaviour
             }
 
             yield return awaitor;
+        }
+    }
+
+    private void CalculateSutiblePoses()
+    {
+        suitablePoses.Clear();
+        for (int i = 0; i < playerSurroundingMapSize; i++)
+        {
+            for (int j = 0; j < playerSurroundingMapSize; j++)
+            {
+                bool isSutible = !_lightPositions.Any(c =>
+                    Vector2.Distance(c, _map[i, j].Item1 + (Vector2)playerTransform.position) <
+                    _range + additionalLightAvoidance);
+
+                isSutible &= _lightPositions.Any(c =>
+                    Vector2.Distance(c, _map[i, j].Item1 + (Vector2)playerTransform.position) <
+                    _range + maxAdditionalDistance);
+
+                _map[i, j].Item2 = isSutible;
+                if (isSutible)
+                    suitablePoses.Add(_map[i, j].Item1);
+            }
         }
     }
 
@@ -148,11 +153,11 @@ public class MonstersAi : MonoBehaviour
 
     public void RequestRespawn(EnemyBehaviour behaviour)
     {
+        CalculateSutiblePoses();
         Vector2 position =
             GetCenterOfMass(_enemies.Where(c => c != behaviour).Select(c => (Vector2)transform.position).ToList());
-        behaviour.Respawn(suitablePoses
-            .OrderByDescending(c => Vector2.Distance(c + (Vector2)playerTransform.position, position))
-            .First() + (Vector2)playerTransform.position);
+        int pos = Random.Range(0, suitablePoses.Count);
+        behaviour.Respawn(suitablePoses[pos] + (Vector2)playerTransform.position);
     }
 
     Vector2 GetCenterOfMass(List<Vector2> positions)

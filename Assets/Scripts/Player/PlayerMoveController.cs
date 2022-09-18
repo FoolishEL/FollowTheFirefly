@@ -41,6 +41,11 @@ public class PlayerMoveController : MonoBehaviour
         EnemyBehaviour.beatedByMonster += OnBeatByMonster;
     }
 
+    private void Start()
+    {
+        speed = GameManager.Instance.PlayerSpeed;
+    }
+
     private void OnDestroy()
     {
         EnemyBehaviour.beatedByMonster -= OnBeatByMonster;

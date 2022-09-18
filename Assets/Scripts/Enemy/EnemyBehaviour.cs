@@ -15,6 +15,7 @@ public class EnemyBehaviour : MonoBehaviour
     [SerializeField] private AnimationReferenceAsset idleAnimation;
     [SerializeField] private float angryDelay = .2f;
     [SerializeField] private float movementSpeed = 1f;
+    [SerializeField] private float idleRange = 2f;
     [SerializeField, Space(20f)] private float idleMovementRange = 1f;
     [SerializeField] private float idleStoppingDistance = .05f;
     [SerializeField] private float withoutLightFollowAwaitTime = .4f;
@@ -36,6 +37,11 @@ public class EnemyBehaviour : MonoBehaviour
     private bool _isMovingToNewPosition = false;
     private bool _isRespawnRequested = false;
     private MonstersAi _monstersAi;
+
+    private void Start()
+    {
+        withoutLightFollowAwaitTime = GameManager.Instance.MonsterTimeReagre;
+    }
 
     public void Initialize(LightController lightController,Transform playerTransform,MonstersAi monstersAi)
     {
@@ -192,28 +198,34 @@ public class EnemyBehaviour : MonoBehaviour
     {
         while (isActiveAndEnabled)
         {
-            yield return null;
-            if (_isNearIdlePosition)
+            int randomCount = Random.Range(3, 7);
+            for (int i = 0; i < randomCount; i++)
             {
-                float time = Random.Range(2f, 4f);
-                yield return new WaitForSeconds(time);
-                Vector2 position2D = (Vector2)transform.position;
-                Vector2 randomPosition = Random.insideUnitCircle * idleMovementRange;
-                randomPosition += _idlePosition;
-                if (_lightedPositions.Any(c =>
-                        Vector2.Distance(c, randomPosition) < _lightController.CurrentLightSettings.lightRange))
+                yield return null;
+                if (_isNearIdlePosition)
                 {
-                    RequestRespawn();
-                    continue;
-                }
-                Vector2 moveStep = randomPosition - position2D;
-                moveStep = moveStep.normalized * movementSpeed * Time.deltaTime;
-                while (Vector2.Distance(transform.position, randomPosition) > idleStoppingDistance)
-                {
-                    transform.position += (Vector3)moveStep;
-                    yield return null;
+                    float time = Random.Range(1f, 4f);
+                    yield return new WaitForSeconds(time);
+                    Vector2 position2D = (Vector2)transform.position;
+                    Vector2 randomPosition = Random.insideUnitCircle * idleRange;
+                    randomPosition += _idlePosition;
+                    if (_lightedPositions.Any(c =>
+                            Vector2.Distance(c, randomPosition) < _lightController.CurrentLightSettings.lightRange))
+                    {
+                        RequestRespawn();
+                        continue;
+                    }
+
+                    Vector2 moveStep = randomPosition - position2D;
+                    moveStep = moveStep.normalized * movementSpeed * Time.deltaTime;
+                    while (Vector2.Distance(transform.position, randomPosition) > idleStoppingDistance)
+                    {
+                        transform.position += (Vector3)moveStep;
+                        yield return null;
+                    }
                 }
             }
+            RequestRespawn();
         }
     }
     private void RequestRespawn()

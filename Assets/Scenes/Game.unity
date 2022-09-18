@@ -376,7 +376,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   compas: {fileID: 1649483944}
   arrow: {fileID: 545597697}
-  exitTransform: {fileID: 2119542105}
+  exitTransform: {fileID: 0}
   playerTransform: {fileID: 1800598060}
 --- !u!1 &477639694
 GameObject:
@@ -477,6 +477,11 @@ MonoBehaviour:
   hasCompas: 0
   menuSceneName: Menu
   gameSceneName: Game
+  playerSpeed: 3
+  flyToPlayer: 7
+  flyFromPlayer: 4
+  monsterTimeReagre: 0.2
+  mapChangeTime: 45
 --- !u!4 &490906301
 Transform:
   m_ObjectHideFlags: 0
@@ -1478,7 +1483,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 5226690827618181830, guid: 4bbd66e7e3b37487a881940d2f491a2a, type: 3}
-  monstersCount: 4
+  monstersCount: 5
   playerTransform: {fileID: 1800598060}
   minRange: 4
   maxRange: 7
@@ -1518,34 +1523,3 @@ MonoBehaviour:
   timePositionChange: 7
   playerSurroundingMapSize: 31
   cellsSize: 0.6
---- !u!1 &2119542104
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2119542105}
-  m_Layer: 0
-  m_Name: ttt
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2119542105
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2119542104}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.05, y: -0.07, z: 1.4288908}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
