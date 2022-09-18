@@ -39,7 +39,7 @@ public class MapGenerator : MonoBehaviour
         playerPosition = startPosition;
         monsterSpawner.SpawnMonsters();
         GenerateMap();
-        StartCoroutine(RegeneratorTimer());
+        //StartCoroutine(RegeneratorTimer());
     }
 
     private IEnumerator RegeneratorTimer()
@@ -80,11 +80,11 @@ public class MapGenerator : MonoBehaviour
                 map[playerPosition.x, playerPosition.y] = MapGeneratorConstants.PLAYER_ID;
             }
         }
-        CreateRoads(isFirstTime ? 2f : 4f);
+        CreateRoads(isFirstTime);
         PrepareMapping();
+        List<Vector2Int> positionsToSave = new List<Vector2Int>();
         if (!isFirstTime)
         {
-            List<Vector2Int> positionsToSave = new List<Vector2Int>();
             foreach (var item in lightController.GetWalkableArea(out var range))
             {
                 positionsToSave.AddRange(mapBuilder.GetTilesInRange(item, range));
@@ -108,7 +108,7 @@ public class MapGenerator : MonoBehaviour
         Visualze();
     }
 
-    private void CreateRoads(float distance)
+    private void CreateRoads(bool isFirstTime)
     {
         corePoint = new List<Vector2Int>();
         for (int i = 0; i < corePointsCount; i++)
@@ -128,7 +128,7 @@ public class MapGenerator : MonoBehaviour
 
             if (corePoint.Any(c => Vector2Int.Distance(c, randomPosition) < 2f) ||
                 Vector2Int.Distance(startPosition, randomPosition) < 2f ||
-                Vector2Int.Distance(playerPosition, randomPosition) < distance ||
+                Vector2Int.Distance(playerPosition, randomPosition) < (isFirstTime ? 2f : 4f) ||
                 Vector2Int.Distance(exitPosition, randomPosition) < 2f)
             {
                 i--;

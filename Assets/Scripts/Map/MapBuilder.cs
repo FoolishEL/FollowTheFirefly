@@ -234,37 +234,82 @@ public class MapBuilder
         foreach (var item in positionsToSave)
         {
             var side = _mapVizual[item.x, item.y].Item2;
-            if (item.y - 1 >= 0)
+            if (side.HasFlag(Sides.Down))
             {
-                connectionMap[GetIdByPosition(item), GetIdByPosition(item.x, item.y - 1)] =
-                    side.HasFlag(Sides.Down) ? int.MaxValue / 3 : 1;
-                connectionMap[GetIdByPosition(item.x, item.y - 1),GetIdByPosition(item)] =
-                    side.HasFlag(Sides.Down) ? int.MaxValue / 3 : 1;
+                if (item.y + 1 < _size.y)
+                {
+                    connectionMap[GetIdByPosition(item), GetIdByPosition(new Vector2Int(item.x, item.y + 1))] =
+                        connectionMap[GetIdByPosition(new Vector2Int(item.x, item.y + 1)), GetIdByPosition(item)] = 1;
+                }
             }
+            else
+            {
+                if (item.y + 1 < _size.y)
+                    connectionMap[GetIdByPosition(item), GetIdByPosition(new Vector2Int(item.x, item.y + 1))] =
+                        connectionMap[GetIdByPosition(new Vector2Int(item.x, item.y + 1)), GetIdByPosition(item)] =
+                            int.MaxValue / 3;
+            }
+            if (side.HasFlag(Sides.Up))
+            {
+                if (item.y - 1 >=0)
+                {
+                    connectionMap[GetIdByPosition(item), GetIdByPosition(new Vector2Int(item.x, item.y - 1))] =
+                        connectionMap[GetIdByPosition(new Vector2Int(item.x, item.y - 1)), GetIdByPosition(item)] = 1;
+                }
+            }
+            else
+            {
+                if (item.y - 1 >=0)
+                {
+                    connectionMap[GetIdByPosition(item), GetIdByPosition(new Vector2Int(item.x, item.y - 1))] =
+                        connectionMap[GetIdByPosition(new Vector2Int(item.x, item.y - 1)), GetIdByPosition(item)] =
+                            int.MaxValue / 3;
+                }
+            }
+            if (side.HasFlag(Sides.Right))
+            {
+                if (item.x - 1 >= 0)
+                {
+                    connectionMap[GetIdByPosition(item), GetIdByPosition(new Vector2Int(item.x - 1, item.y))] =
+                        connectionMap[GetIdByPosition(new Vector2Int(item.x - 1, item.y)), GetIdByPosition(item)] = 1;
+                }
+            }
+            else
+            {
+                if (item.x - 1 >= 0)
+                {
+                    connectionMap[GetIdByPosition(item), GetIdByPosition(new Vector2Int(item.x - 1, item.y))] =
+                        connectionMap[GetIdByPosition(new Vector2Int(item.x - 1, item.y)), GetIdByPosition(item)] =
+                            int.MaxValue / 3;
+                }
+            }
+            if (side.HasFlag(Sides.Left))
+            {
+                if (item.x + 1 < _size.x)
+                {
+                    connectionMap[GetIdByPosition(item), GetIdByPosition(new Vector2Int(item.x + 1, item.y))] =
+                        connectionMap[GetIdByPosition(new Vector2Int(item.x + 1, item.y)), GetIdByPosition(item)] = 1;
+                }
+            }
+            else
+            {
+                if (item.x + 1 < _size.x)
+                {
+                    connectionMap[GetIdByPosition(item), GetIdByPosition(new Vector2Int(item.x + 1, item.y))] =
+                        connectionMap[GetIdByPosition(new Vector2Int(item.x + 1, item.y)), GetIdByPosition(item)] =
+                            int.MaxValue / 3;
+                }
+            }
+        }
+    }
 
-            if (item.y + 1 < _size.y)
-            {
-                connectionMap[GetIdByPosition(item), GetIdByPosition(item.x, item.y + 1)] =
-                    side.HasFlag(Sides.Up) ? int.MaxValue / 3 : 1;
-                connectionMap[ GetIdByPosition(item.x, item.y + 1),GetIdByPosition(item)] =
-                    side.HasFlag(Sides.Up) ? int.MaxValue / 3 : 1;
-            }
-
-            if (item.x + 1 < _size.x)
-            {
-                connectionMap[GetIdByPosition(item), GetIdByPosition(item.x + 1, item.y)] =
-                    side.HasFlag(Sides.Right) ? 1 : int.MaxValue / 3;
-                connectionMap[GetIdByPosition(item.x + 1, item.y), GetIdByPosition(item)] =
-                    side.HasFlag(Sides.Right) ? 1 : int.MaxValue / 3;
-            }
-
-            if (item.x - 1 >= 0)
-            {
-                connectionMap[GetIdByPosition(item), GetIdByPosition(item.x - 1, item.y)] =
-                    side.HasFlag(Sides.Left) ? 1 : int.MaxValue / 3;
-                connectionMap[GetIdByPosition(item.x - 1, item.y), GetIdByPosition(item)] =
-                    side.HasFlag(Sides.Left) ? 1 : int.MaxValue / 3;
-            }
+    public bool CheckNull(Vector2Int position)
+    {
+        if (_mapVizual == null)
+            return true;
+        else
+        {
+            return _mapVizual[position.x, position.y].Item2 == Sides.None;
         }
     }
     
