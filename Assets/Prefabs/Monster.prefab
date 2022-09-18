@@ -142,10 +142,12 @@ MonoBehaviour:
   stoppingDistance: 0.3
   becomeAnger: {fileID: 11400000, guid: d0025db5cd27f49fc8bc7193f4f31aba, type: 2}
   angryWalk: {fileID: 11400000, guid: afdb4aa2f04094461a11236384beb6d5, type: 2}
+  idleAnimation: {fileID: 11400000, guid: a7cbda78eefe44713a18c4841eaa4141, type: 2}
   angryDelay: 0.2
   movementSpeed: 1
   idleMovementRange: 1
   idleStoppingDistance: 0.05
+  withoutLightFollowAwaitTime: 2
   aye: {fileID: 7009131413502921074}
   ayeRange: 0.04
 --- !u!1 &7009131413141365686

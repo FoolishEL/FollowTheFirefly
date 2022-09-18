@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
@@ -26,9 +26,11 @@ public class MonstersAi : MonoBehaviour
 
     private (Vector2, bool)[,] _map;
     private float _range = 1.2f;
+    private List<Vector2> suitablePoses;
 
     private void Start()
     {
+        suitablePoses = new List<Vector2>();
         _lightPositions = new List<Vector2>();
         lightController.onActiveLightPositionChanged += UpdateLightPositions;
         if (playerSurroundingMapSize % 2 == 0)
@@ -52,10 +54,9 @@ public class MonstersAi : MonoBehaviour
     private IEnumerator SwitchMonstersPositions()
     {
         WaitForSeconds awaitor = new WaitForSeconds(timePositionChange);
-        List<Vector2> sutiblePoses = new List<Vector2>();
         while (isActiveAndEnabled)
         {
-            sutiblePoses.Clear();
+            suitablePoses.Clear();
             for (int i = 0; i < playerSurroundingMapSize; i++)
             {
                 for (int j = 0; j < playerSurroundingMapSize; j++)
@@ -70,16 +71,15 @@ public class MonstersAi : MonoBehaviour
 
                     _map[i, j].Item2 = isSutible;
                     if (isSutible)
-                        sutiblePoses.Add(_map[i, j].Item1);
+                        suitablePoses.Add(_map[i, j].Item1);
                 }
             }
-
             foreach (var enemy in _enemies)
             {
                 Vector2 currentPosition = Vector2.zero;
                 float minDistance = 1000f;
                 var positionsCanReach =
-                    sutiblePoses.Where(c => !_lightPositions.Any(k =>
+                    suitablePoses.Where(c => !_lightPositions.Any(k =>
                         IsRouteIntersect(enemy.transform.position, c + (Vector2)playerTransform.position, k,
                             _range + additionalLightAvoidance))
                     ).ToList();
@@ -145,6 +145,26 @@ public class MonstersAi : MonoBehaviour
     {
         _enemies.Add(behaviour);
     }
+
+    public void RequestRespawn(EnemyBehaviour behaviour)
+    {
+        Vector2 position =
+            GetCenterOfMass(_enemies.Where(c => c != behaviour).Select(c => (Vector2)transform.position).ToList());
+        behaviour.Respawn(suitablePoses
+            .OrderByDescending(c => Vector2.Distance(c + (Vector2)playerTransform.position, position))
+            .First() + (Vector2)playerTransform.position);
+    }
+
+    Vector2 GetCenterOfMass(List<Vector2> positions)
+    {
+        Vector2 position = Vector2.zero;
+        foreach (var item in positions)
+        {
+            position += item;
+        }
+        return position / positions.Count;
+    }
+    
 #if UNITY_EDITOR &&false
     private void OnDrawGizmos()
     {

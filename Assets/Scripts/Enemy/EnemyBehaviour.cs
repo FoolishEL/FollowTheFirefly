@@ -13,38 +13,48 @@ public class EnemyBehaviour : MonoBehaviour
     [SerializeField] private float stoppingDistance = .2f;
     [SerializeField] private AnimationReferenceAsset becomeAnger;
     [SerializeField] private AnimationReferenceAsset angryWalk;
+    [SerializeField] private AnimationReferenceAsset idleAnimation;
     [SerializeField] private float angryDelay = .2f;
     [SerializeField] private float movementSpeed = 1f;
     [SerializeField, Space(20f)] private float idleMovementRange = 1f;
     [SerializeField] private float idleStoppingDistance = .05f;
+    [SerializeField] private float withoutLightFollowAwaitTime = .4f;
 
     [SerializeField, Space(20f)] private Transform aye;
     [SerializeField] private float ayeRange = .1f;
 
     private Coroutine _idleCoroutine;
+    private Coroutine _killingCoroutine;
     public static event Action beatedByMonster = delegate { };
     
     private List<Vector2> _lightedPositions;
     private LightController _lightController;
     private Transform _playerTransform;
-    private bool isKillingMode = false;
     private Vector2 _idlePosition;
+    
+    private bool _isKillingMode = false;
     private bool _isNearIdlePosition = true;
-    private bool isMoveingToNewPosition = false;
+    private bool _isMovingToNewPosition = false;
+    private bool _isRespawnRequested = false;
+    private MonstersAi _monstersAi;
 
     public void Initialize(LightController lightController,Transform playerTransform,MonstersAi monstersAi)
     {
-        monstersAi.RegisterEnemy(this);
+        _isKillingMode = false;
         _isNearIdlePosition = true;
+        _isRespawnRequested = false;
+        _isMovingToNewPosition = false;
+        _monstersAi = monstersAi;
+        monstersAi.RegisterEnemy(this);
         _idlePosition = transform.position;
         _playerTransform = playerTransform;
         _lightedPositions = new List<Vector2>();
         _lightController = lightController;
+        skeletonAnimation.state.SetAnimation(0, idleAnimation, true);
         _lightController.onActiveLightPositionChanged += UpdateLightPositions;
         UpdateLightPositions();
         _idleCoroutine = StartCoroutine(MonsterIdling());
         StartCoroutine(AyeUpdate());
-
     }
 
     private IEnumerator AyeUpdate()
@@ -72,9 +82,9 @@ public class EnemyBehaviour : MonoBehaviour
 
     public void SetIdlePosition(Vector2 position)
     {
-        if(isMoveingToNewPosition)
+        if (_isMovingToNewPosition || _isKillingMode || _isRespawnRequested)
             return;
-        isMoveingToNewPosition = true;
+        _isMovingToNewPosition = true;
         _idlePosition = position;
         StopCoroutine(_idleCoroutine);
         MoveToNewIdlePosition(position);
@@ -82,6 +92,8 @@ public class EnemyBehaviour : MonoBehaviour
 
     private async UniTask MoveToNewIdlePosition(Vector2 position)
     {
+        if (_isKillingMode || _isRespawnRequested)
+            return;
         Vector2 moveDirection = Vector2.one;
         while (Vector2.Distance(transform.position, position) > stoppingDistance)
         {
@@ -97,32 +109,54 @@ public class EnemyBehaviour : MonoBehaviour
             transform.position += (Vector3)moveDirection;
             await UniTask.Yield();
         }
-        isMoveingToNewPosition = false;
+        _isMovingToNewPosition = false;
         _idleCoroutine = StartCoroutine(MonsterIdling());
     }
 
     private void CheckInRange()
     {
-        if(isKillingMode)
+        if (_isKillingMode)
+        {
             return;
+        }
         foreach (var item in _lightedPositions)
         {
             if (Vector2.Distance(transform.position, item) < _lightController.CurrentLightSettings.lightRange)
             {
                 if (_idleCoroutine != null)
                     StopCoroutine(_idleCoroutine);
-                isKillingMode = true;
-                _lightController.onActiveLightPositionChanged -= UpdateLightPositions;
-                KillingMode();
+                _isKillingMode = true;
+                StartCoroutine(LightDisapearAwaitor());
+                _killingCoroutine = StartCoroutine(KillingMode());
             }
         }
     }
 
-    private async UniTask KillingMode()
+    private IEnumerator LightDisapearAwaitor()
     {
-        await UniTask.Delay(TimeSpan.FromSeconds(angryDelay));
+        for (float time = 0; time < withoutLightFollowAwaitTime && isActiveAndEnabled; time += Time.deltaTime)
+        {
+            if (_lightedPositions.Any(c =>
+                    Vector2.Distance(c, transform.position) <=
+                    _lightController.CurrentLightSettings.lightRange + .1f))
+                time = 0f;
+            yield return null;
+        }
+        _isKillingMode = false;
+        StopCoroutine(_killingCoroutine);
+        skeletonAnimation.state.SetAnimation(0, idleAnimation, true);
+        _isKillingMode = false;
+        _isNearIdlePosition = true;
+        _isRespawnRequested = false;
+        _isMovingToNewPosition = false;
+        _idleCoroutine = StartCoroutine(MonsterIdling());
+    }
+
+    private IEnumerator KillingMode()
+    {
+        yield return new WaitForSeconds(angryDelay);
         skeletonAnimation.state.SetAnimation(0, becomeAnger, false);
-        await UniTask.Delay(TimeSpan.FromSeconds(becomeAnger.Animation.Duration * skeletonAnimation.timeScale));
+        yield return new WaitForSeconds(becomeAnger.Animation.Duration * skeletonAnimation.timeScale);
         skeletonAnimation.state.SetAnimation(0, angryWalk, true);
         Vector2 moveDirection = Vector2.one;
         while (Vector2.Distance(transform.position, _playerTransform.position) > stoppingDistance)
@@ -130,13 +164,14 @@ public class EnemyBehaviour : MonoBehaviour
             moveDirection = _playerTransform.position - transform.position;
             moveDirection = moveDirection.normalized * movementSpeed * Time.deltaTime;
             transform.position += (Vector3)moveDirection;
-            await UniTask.Yield();
+            yield return null;
         }
         beatedByMonster.Invoke();
     }
 
     private IEnumerator MonsterIdling()
     {
+        float timeIdling = 0f;
         while (isActiveAndEnabled)
         {
             yield return null;
@@ -150,8 +185,14 @@ public class EnemyBehaviour : MonoBehaviour
                 if (_lightedPositions.Any(c =>
                         Vector2.Distance(c, randomPosition) < _lightController.CurrentLightSettings.lightRange + 2f))
                 {
-                    continue;
+                    if (timeIdling - Time.time > 2f)
+                    {
+                        RequestRespawn();
+                        continue;
+                    }
                 }
+
+                timeIdling = Time.time;
                 Vector2 moveStep = randomPosition - position2D;
                 moveStep = moveStep.normalized * movementSpeed * Time.deltaTime;
                 while (Vector2.Distance(transform.position, randomPosition) > idleStoppingDistance)
@@ -161,5 +202,28 @@ public class EnemyBehaviour : MonoBehaviour
                 }
             }
         }
+    }
+    private void RequestRespawn()
+    {
+        _isKillingMode = false;
+        _isNearIdlePosition = true;
+        _isRespawnRequested = true;
+        _isMovingToNewPosition = false;
+        StopAllCoroutines();
+        _monstersAi.RequestRespawn(this);
+    }
+
+    public void Respawn(Vector2 position)
+    {
+        _isKillingMode = false;
+        _isNearIdlePosition = true;
+        _isRespawnRequested = false;
+        _isMovingToNewPosition = false;
+        _idlePosition = position;
+        skeletonAnimation.state.SetAnimation(0, idleAnimation, true);
+        transform.position = new Vector3(position.x, position.y, transform.position.z);
+        UpdateLightPositions();
+        _idleCoroutine = StartCoroutine(MonsterIdling());
+        StartCoroutine(AyeUpdate());
     }
 }
