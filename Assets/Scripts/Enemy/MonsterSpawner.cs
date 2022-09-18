@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -12,8 +10,14 @@ public class MonsterSpawner : MonoBehaviour
     [SerializeField] private float minRange = 1f;
     [SerializeField] private float maxRange = 2f;
     [SerializeField] private LightController lightController;
+    [SerializeField] private MonstersAi monstersAi;
 
     public void SpawnMonsters()
+    {
+        StartCoroutine(Spawer());
+    }
+
+    private IEnumerator Spawer()
     {
         for (int i = 0; i < monstersCount; i++)
         {
@@ -22,7 +26,8 @@ public class MonsterSpawner : MonoBehaviour
             direction.Normalize();
             direction *= Random.Range(minRange, maxRange);
             enemy.transform.position = playerTransform.position + (Vector3)direction;
-            enemy.Initialize(lightController);
+            enemy.Initialize(lightController, playerTransform, monstersAi);
+            yield return new WaitForSeconds(Random.Range(.1f, .5f));
         }
     }
 }

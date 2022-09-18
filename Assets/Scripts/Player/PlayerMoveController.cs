@@ -32,15 +32,30 @@ public class PlayerMoveController : MonoBehaviour
 
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private LightController lightController;
+    [SerializeField] private Transform cameraTransform;
 
     private void Awake()
     {
         rb.gravityScale = 0f;
         _sides = Sides.Down;
+        EnemyBehaviour.beatedByMonster += OnBeatByMonster;
+    }
+
+    private void OnDestroy()
+    {
+        EnemyBehaviour.beatedByMonster -= OnBeatByMonster;
+    }
+
+    private void OnBeatByMonster()
+    {
+        transform.rotation *= Quaternion.Euler(new Vector3(0f, 0f, 90f));
+        cameraTransform.rotation *= Quaternion.Euler(new Vector3(0f, 0f, -90f));
     }
 
     private void Update()
     {
+        if (!GameManager.Instance.isPlaying)
+            return;
         direction = Vector2Int.zero;
         if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))
         {

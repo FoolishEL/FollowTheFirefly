@@ -76,7 +76,7 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 12
+  m_SortingOrder: 20
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &7009131411831039759
 MonoBehaviour:
@@ -139,6 +139,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skeletonAnimation: {fileID: 7009131411831039759}
+  stoppingDistance: 0.3
+  becomeAnger: {fileID: 11400000, guid: d0025db5cd27f49fc8bc7193f4f31aba, type: 2}
+  angryWalk: {fileID: 11400000, guid: afdb4aa2f04094461a11236384beb6d5, type: 2}
+  angryDelay: 0.2
+  movementSpeed: 1
+  idleMovementRange: 1
+  idleStoppingDistance: 0.05
+  aye: {fileID: 7009131413502921074}
+  ayeRange: 0.04
 --- !u!1 &7009131413141365686
 GameObject:
   m_ObjectHideFlags: 0
@@ -220,7 +229,7 @@ Transform:
   m_GameObject: {fileID: 7009131413502921073}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7009131413141365687}
@@ -266,7 +275,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 13
+  m_SortingOrder: 21
   m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_FlipX: 0

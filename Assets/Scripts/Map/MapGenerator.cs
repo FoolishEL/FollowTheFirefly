@@ -44,10 +44,11 @@ public class MapGenerator : MonoBehaviour
     private IEnumerator RegeneratorTimer()
     {
         WaitForSeconds awaitor = new WaitForSeconds(regenTime);
-        while (isActiveAndEnabled)
+        while (isActiveAndEnabled && GameManager.Instance.isPlaying)
         {
             yield return awaitor;
-            RegenerateMap();
+            if (isActiveAndEnabled && GameManager.Instance.isPlaying)
+                RegenerateMap();
         }
     }
 

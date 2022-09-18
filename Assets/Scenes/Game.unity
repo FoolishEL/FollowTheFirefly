@@ -425,6 +425,54 @@ MonoBehaviour:
     three: {fileID: 11400000, guid: cad0839db4c324c43a6376c0c1f7f38e, type: 2}
     four: {fileID: 11400000, guid: be075da7b28184c2fb15f62d4907e497, type: 2}
     animation: {fileID: 492128333}
+  lightsOffAnimation: 2
+--- !u!1 &490906299
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 490906301}
+  - component: {fileID: 490906300}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &490906300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490906299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aaddba932bfaa46febf3767de09edced, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isPlaying: 1
+  menuSceneName: Menu
+  gameSceneName: Game
+--- !u!4 &490906301
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490906299}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 532.8882, y: 59.969448, z: 0.30358148}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &492128330
 GameObject:
   m_ObjectHideFlags: 0
@@ -547,7 +595,7 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 40
+  m_SortingOrder: 14
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &647634186
 GameObject:
@@ -589,27 +637,27 @@ MonoBehaviour:
     spriteRenderer: {fileID: 4002447799579872213, guid: 9a3835242a96c4c19966c55150365d48, type: 3}
     sidedImages:
     - Side: 6
-      Image: {fileID: -1419940108, guid: a32044d8e4a003e41bbb1ef728dd011d, type: 3}
+      Image: {fileID: -885751265, guid: c0975034acf95c946a4d879d43937df4, type: 3}
     - Side: 14
-      Image: {fileID: 1202192691, guid: a32044d8e4a003e41bbb1ef728dd011d, type: 3}
+      Image: {fileID: 1735048810, guid: c0975034acf95c946a4d879d43937df4, type: 3}
     - Side: 10
-      Image: {fileID: -589982612, guid: a32044d8e4a003e41bbb1ef728dd011d, type: 3}
+      Image: {fileID: 1580686103, guid: c0975034acf95c946a4d879d43937df4, type: 3}
     - Side: 7
-      Image: {fileID: -1145658805, guid: a32044d8e4a003e41bbb1ef728dd011d, type: 3}
+      Image: {fileID: 83119227, guid: c0975034acf95c946a4d879d43937df4, type: 3}
     - Side: -1
-      Image: {fileID: 229799314, guid: a32044d8e4a003e41bbb1ef728dd011d, type: 3}
+      Image: {fileID: 2010096082, guid: c0975034acf95c946a4d879d43937df4, type: 3}
     - Side: 11
-      Image: {fileID: 509003033, guid: a32044d8e4a003e41bbb1ef728dd011d, type: 3}
+      Image: {fileID: 1563928423, guid: c0975034acf95c946a4d879d43937df4, type: 3}
     - Side: 12
-      Image: {fileID: -698666849, guid: a32044d8e4a003e41bbb1ef728dd011d, type: 3}
+      Image: {fileID: 430316468, guid: c0975034acf95c946a4d879d43937df4, type: 3}
     - Side: 5
-      Image: {fileID: 1989785708, guid: a32044d8e4a003e41bbb1ef728dd011d, type: 3}
+      Image: {fileID: -30391595, guid: c0975034acf95c946a4d879d43937df4, type: 3}
     - Side: 13
-      Image: {fileID: 1738130644, guid: a32044d8e4a003e41bbb1ef728dd011d, type: 3}
+      Image: {fileID: 1735048810, guid: c0975034acf95c946a4d879d43937df4, type: 3}
     - Side: 9
-      Image: {fileID: 968707863, guid: a32044d8e4a003e41bbb1ef728dd011d, type: 3}
+      Image: {fileID: 802224136, guid: c0975034acf95c946a4d879d43937df4, type: 3}
     - Side: 3
-      Image: {fileID: -73143697, guid: a32044d8e4a003e41bbb1ef728dd011d, type: 3}
+      Image: {fileID: 1595796910, guid: c0975034acf95c946a4d879d43937df4, type: 3}
   monsterSpawner: {fileID: 2023424777}
 --- !u!4 &647634188
 Transform:
@@ -1173,6 +1221,7 @@ MonoBehaviour:
   speed: 1
   rb: {fileID: 1800598062}
   lightController: {fileID: 477639697}
+  cameraTransform: {fileID: 1143018731}
 --- !u!58 &1800598064
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1199,6 +1248,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2023424778}
   - component: {fileID: 2023424777}
+  - component: {fileID: 2023424779}
   m_Layer: 0
   m_Name: MonsterSpawner
   m_TagString: Untagged
@@ -1219,11 +1269,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 5226690827618181830, guid: 4bbd66e7e3b37487a881940d2f491a2a, type: 3}
-  monstersCount: 1
+  monstersCount: 4
   playerTransform: {fileID: 1800598060}
-  minRange: 1
-  maxRange: 2
+  minRange: 4
+  maxRange: 7
   lightController: {fileID: 477639697}
+  monstersAi: {fileID: 2023424779}
 --- !u!4 &2023424778
 Transform:
   m_ObjectHideFlags: 0
@@ -1239,3 +1290,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2023424779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2023424776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d1f2fe81717645c893f254f2201ea07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerTransform: {fileID: 1800598060}
+  lightController: {fileID: 477639697}
+  additionalLightAvoidance: 2.3
+  maxAdditionalDistance: 5
+  timePositionChange: 3
+  playerSurroundingMapSize: 41
+  cellsSize: 0.4

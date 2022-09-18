@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using Spine.Unity;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class LightController : MonoBehaviour
@@ -23,6 +23,8 @@ public class LightController : MonoBehaviour
     [SerializeField] private Transform playerTransform;
     [SerializeField] private Transform lampTransform;
     [SerializeField] private AnimationForLantern animController;
+    [SerializeField] private float lightsOffAnimation = 2f;
+    public LightSettings CurrentLightSettings => lightSettings;
     public event Action onActiveLightPositionChanged = delegate { };
 
     private void Awake()
@@ -32,12 +34,39 @@ public class LightController : MonoBehaviour
         _inRoadFireFlies = new List<FireFly>();
         TileColliderSetter.onLightAdded += AddStaticLight;
         TileColliderSetter.onLightRemoved += RemoveStaticLight;
+        EnemyBehaviour.beatedByMonster += TurnOffLights;
+    }
+
+    private void TurnOffLights()
+    {
+        if(!GameManager.Instance.isPlaying)
+            return;
+        GameManager.Instance.isPlaying = false;
+        List<Transform> areasCenters = new List<Transform>();
+        areasCenters.AddRange(_activeFireFlies.Select(c => c.transform));
+        areasCenters.AddRange(staticBonusLights);
+        DelayLightsOff(areasCenters);
+    }
+
+    private async UniTask DelayLightsOff(List<Transform> lights)
+    {
+        for (float time = 0; time < lightsOffAnimation; time += Time.deltaTime)
+        {
+            await UniTask.Yield();
+            foreach (var light in lights)
+            {
+                light.localScale = Vector3.Lerp(Vector3.one, Vector3.zero, time / lightsOffAnimation);
+            }
+        }
+        await UniTask.Delay(TimeSpan.FromSeconds(1f));
+        GameManager.Instance.ToMainMenu();
     }
 
     private void OnDestroy()
     {
         TileColliderSetter.onLightAdded -= AddStaticLight;
-        TileColliderSetter.onLightRemoved += RemoveStaticLight;
+        TileColliderSetter.onLightRemoved -= RemoveStaticLight;
+        EnemyBehaviour.beatedByMonster -= TurnOffLights;
     }
 
     private void Start()
@@ -47,6 +76,8 @@ public class LightController : MonoBehaviour
 
     private void Update()
     {
+        if(!GameManager.Instance.isPlaying)
+            return;
         Vector3 worldPosition = camera.ScreenToWorldPoint(Input.mousePosition);
         worldPosition.z = prefab.transform.position.z;
         if (Input.GetMouseButtonDown(0))
@@ -112,6 +143,7 @@ public class LightController : MonoBehaviour
                 {
                     _activeFireFlies.Remove(fly);
                     _inRoadFireFlies.Add(fly);
+                    onActiveLightPositionChanged.Invoke();
                     StartCoroutine(PlaceIntoInactiveAwaitor(fly));
                 }
             }
