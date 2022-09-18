@@ -492,7 +492,7 @@ MonoBehaviour:
   hasCompas: 0
   menuSceneName: Menu
   gameSceneName: Game
-  playerSpeed: 3
+  playerSpeed: 2.5
   flyToPlayer: 7
   flyFromPlayer: 4
   monsterTimeReagre: 0.2
@@ -1518,7 +1518,7 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 2
-  m_AngularDrag: 0.1
+  m_AngularDrag: 0.07
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0

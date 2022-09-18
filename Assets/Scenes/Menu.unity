@@ -810,7 +810,7 @@ MonoBehaviour:
   hasCompas: 0
   menuSceneName: Menu
   gameSceneName: Game
-  playerSpeed: 3
+  playerSpeed: 2.5
   flyToPlayer: 7
   flyFromPlayer: 4
   monsterTimeReagre: 0.2
