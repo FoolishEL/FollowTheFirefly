@@ -14,6 +14,9 @@ public class TileColliderSetter : MonoBehaviour
     [SerializeField] private Transform lightTransform;
     [SerializeField] private GameObject house;
     [SerializeField] private GameObject startLock;
+    [SerializeField] private GameObject compas;
+    private static TileColliderSetter compasOwner;
+    public static event Action<Transform> onHouseAppear = delegate { };
     public static event Action<Transform> onLightAdded = delegate { };
     public static event Action<Transform> onLightRemoved = delegate { };
     public void SetupColliders(Sides side)
@@ -24,7 +27,6 @@ public class TileColliderSetter : MonoBehaviour
         right.SetActive(!side.HasFlag(Sides.Right));
         left.SetActive(!side.HasFlag(Sides.Left));
     }
-
     public void SetTileInfo(int id)
     {
         tileId = id;
@@ -38,8 +40,18 @@ public class TileColliderSetter : MonoBehaviour
             lightTransform.gameObject.SetActive(false);
             onLightRemoved.Invoke(lightTransform);
         }
-        house.gameObject.SetActive(id == MapGeneratorConstants.EXIT_ID);
-        startLock.gameObject.SetActive(id == MapGeneratorConstants.START_ID ||
+        house.SetActive(id == MapGeneratorConstants.EXIT_ID);
+        if (id == MapGeneratorConstants.EXIT_ID)
+            onHouseAppear.Invoke(house.transform);
+        startLock.SetActive(id == MapGeneratorConstants.START_ID ||
                                        id == MapGeneratorConstants.PLAYER_ID_AND_START);
+    }
+
+    public void SpawnCompas()
+    {
+        compas.SetActive(true);
+        if (compasOwner != null)
+            compasOwner.compas.SetActive(false);
+        compasOwner = this;
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 [Serializable]
 public class MapBuilder
@@ -19,11 +20,13 @@ public class MapBuilder
     private Vector2Int _exitPosition;
     private Vector2Int _playerPosition;
     private List<Vector2Int> _playerRoad;
+    private bool isCompasAdded = false;
 
 
     public void Initialize(Vector2Int size, Transform transform, int[,] map, List<Vector2Int> mainRoad,
         Vector2Int startPosition, Vector2Int exitPosition, Vector2Int playerPosition, List<Vector2Int> playerRoad)
     {
+        isCompasAdded = GameManager.Instance.hasCompas;
         _size = size;
         _spawnTransform = transform;
         _map = map;
@@ -135,6 +138,30 @@ public class MapBuilder
 
     private void AddRoad(List<Vector2Int> road)
     {
+        int compasPos = Random.Range(1, road.Count);
+        if (!isCompasAdded)
+        {
+            var roadsWithout = road.Where(c =>
+                _map[road[compasPos].x, road[compasPos].y] != MapGeneratorConstants.EXIT_ID ||
+                _map[road[compasPos].x, road[compasPos].y] != MapGeneratorConstants.START_ID ||
+                _map[road[compasPos].x, road[compasPos].y] != MapGeneratorConstants.PLAYER_ID ||
+                _map[road[compasPos].x, road[compasPos].y] != MapGeneratorConstants.PLAYER_ID_AND_START).ToList();
+            if (roadsWithout.Any())
+            {
+                compasPos = Random.Range(0, roadsWithout.Count);
+                _mapVizual[roadsWithout[compasPos].x, roadsWithout[compasPos].y].Item1.SpawnCompas();
+                isCompasAdded = true;
+#if UNITY_EDITOR
+                Debug.LogError($"Compas spawned at ({roadsWithout[compasPos].x},{roadsWithout[compasPos].y})");
+#endif
+            }
+#if UNITY_EDITOR
+            else
+            {
+                Debug.LogError($"No compas(");
+            }
+#endif
+        }
         for (int i = 0; i < road.Count - 1; i++)
         {
             if ((road[i] - road[i + 1]).Equals(Vector2Int.down))

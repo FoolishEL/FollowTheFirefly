@@ -37,6 +37,15 @@ public class MapGenerator : MonoBehaviour
             startPosition.y * MapGeneratorConstants.POSITION_SCALE_MODIFICATOR, playerTransform.position.z);
         playerTransform.position = playerSpawnPosition;
         playerPosition = startPosition;
+        // while (exitPosition != startPosition)
+        // {
+        //     var randomVector = Random.insideUnitCircle;
+        //     randomVector.x = Mathf.Abs(randomVector.x);
+        //     randomVector.y = Mathf.Abs(randomVector.y);
+        //     randomVector.x *= size.x / 2;
+        //     randomVector.y *= size.y / 2;
+        //     exitPosition = new Vector2Int((int)randomVector.x + size.x / 2, (int)randomVector.y + size.y / 2);
+        // }
         monsterSpawner.SpawnMonsters();
         GenerateMap();
         //StartCoroutine(RegeneratorTimer());
