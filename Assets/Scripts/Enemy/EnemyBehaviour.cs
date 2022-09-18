@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using Spine.Unity;
 using UnityEngine;
@@ -86,6 +87,13 @@ public class EnemyBehaviour : MonoBehaviour
         {
             moveDirection = position - (Vector2)transform.position;
             moveDirection = moveDirection.normalized * movementSpeed * Time.deltaTime;
+            if (_lightedPositions.Any(c =>
+                    Vector2.Distance((Vector2)transform.position + moveDirection, c) <
+                    _lightController.CurrentLightSettings.lightRange + 2f))
+            {
+                await UniTask.Yield();
+                break;
+            }
             transform.position += (Vector3)moveDirection;
             await UniTask.Yield();
         }
@@ -131,13 +139,19 @@ public class EnemyBehaviour : MonoBehaviour
     {
         while (isActiveAndEnabled)
         {
+            yield return null;
             if (_isNearIdlePosition)
             {
-                float time = Random.Range(1f, 3f);
+                float time = Random.Range(2f, 4f);
                 yield return new WaitForSeconds(time);
                 Vector2 position2D = (Vector2)transform.position;
                 Vector2 randomPosition = Random.insideUnitCircle * idleMovementRange;
                 randomPosition += _idlePosition;
+                if (_lightedPositions.Any(c =>
+                        Vector2.Distance(c, randomPosition) < _lightController.CurrentLightSettings.lightRange + 2f))
+                {
+                    continue;
+                }
                 Vector2 moveStep = randomPosition - position2D;
                 moveStep = moveStep.normalized * movementSpeed * Time.deltaTime;
                 while (Vector2.Distance(transform.position, randomPosition) > idleStoppingDistance)

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
@@ -79,7 +80,8 @@ public class MonstersAi : MonoBehaviour
                 float minDistance = 1000f;
                 var positionsCanReach =
                     sutiblePoses.Where(c => !_lightPositions.Any(k =>
-                        IsRouteIntersect(enemy.transform.position, c + (Vector2)playerTransform.position, k))
+                        IsRouteIntersect(enemy.transform.position, c + (Vector2)playerTransform.position, k,
+                            _range + additionalLightAvoidance))
                     ).ToList();
                 if (positionsCanReach.Any())
                 {
@@ -96,9 +98,9 @@ public class MonstersAi : MonoBehaviour
         }
     }
 
-    private bool IsRouteIntersect(Vector2 firstPoint, Vector2 secondPoint, Vector2 circleCenter)
+    public static bool IsRouteIntersect(Vector2 firstPoint, Vector2 secondPoint, Vector2 circleCenter,float _range)
     {
-        float currRange = _range + additionalLightAvoidance;
+        float currRange = _range;
         currRange *= currRange;
         float x, A, B, C, D;
         float slope = (secondPoint.y - firstPoint.y) / (secondPoint.x - firstPoint.x);
