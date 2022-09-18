@@ -43,6 +43,7 @@ public class GameManager : MonoBehaviour
     {
         if(SceneManager.GetActiveScene().name == menuSceneName)
             return;
+        Time.timeScale = 1f;
         isPlaying = false;
         SceneManager.LoadScene(menuSceneName);
     }

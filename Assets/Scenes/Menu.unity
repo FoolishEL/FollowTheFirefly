@@ -806,7 +806,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaddba932bfaa46febf3767de09edced, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPlaying: 0
+  isPlaying: 1
   hasCompas: 0
   menuSceneName: Menu
   gameSceneName: Game
+  playerSpeed: 3
+  flyToPlayer: 7
+  flyFromPlayer: 4
+  monsterTimeReagre: 0.2
+  mapChangeTime: 30
