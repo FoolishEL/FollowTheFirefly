@@ -15,6 +15,7 @@ public class LightController : MonoBehaviour
     private List<FireFly> _inRoadFireFlies;
     [SerializeField]
     private List<FireFly> _inactiveFireFlies;
+    private List<FireFly> _allFlies;
     [SerializeField] private Camera camera;
     [SerializeField] private int startMaxPLayerLights = 4;
     [SerializeField] private List<Transform> staticBonusLights;
@@ -32,6 +33,17 @@ public class LightController : MonoBehaviour
         _activeFireFlies = new List<FireFly>();
         _inactiveFireFlies = new List<FireFly>();
         _inRoadFireFlies = new List<FireFly>();
+        _allFlies = new List<FireFly>();
+        for (int i = 0; i < startMaxPLayerLights; i++)
+        {
+            var fly = Instantiate(prefab, transform);
+            Vector3 startPosition = lampTransform.position;
+            startPosition.z = fly.transform.position.z;
+            fly.gameObject.SetActive(false);
+            fly.transform.position = startPosition;
+            _allFlies.Add(fly);
+            _inactiveFireFlies.Add(fly);
+        }
         TileColliderSetter.onLightAdded += AddStaticLight;
         TileColliderSetter.onLightRemoved += RemoveStaticLight;
         EnemyBehaviour.beatedByMonster += TurnOffLights;
@@ -72,6 +84,7 @@ public class LightController : MonoBehaviour
     private void Start()
     {
         animController.SetNumber(4);
+        StartCoroutine(FlyFixer());
     }
 
     private void Update()
@@ -121,14 +134,7 @@ public class LightController : MonoBehaviour
                 }
                 else
                 {
-                    fly = Instantiate(prefab, transform);
-                    Vector3 startPosition = lampTransform.position;
-                    startPosition.z = fly.transform.position.z;
-                    fly.transform.position = startPosition;
-                    _inRoadFireFlies.Add(fly);
-                    fly.MoveToPosition(worldPosition);
-                    animController.SetNumber(animController.CurrentCount - 1);
-                    StartCoroutine(PlaceIntoActiveAwaitor(fly));
+                    Debug.LogError("No flies!!");
                 }
 
             }
@@ -147,6 +153,36 @@ public class LightController : MonoBehaviour
                     StartCoroutine(PlaceIntoInactiveAwaitor(fly));
                 }
             }
+        }
+    }
+
+    private IEnumerator FlyFixer()
+    {
+        WaitForSeconds awaiter = new WaitForSeconds(1f);
+        while (isActiveAndEnabled)
+        {
+            yield return awaiter;
+            if ((_activeFireFlies.Count + _inactiveFireFlies.Count + _inRoadFireFlies.Count != startMaxPLayerLights) ||
+                (_activeFireFlies.Distinct().Count() != _activeFireFlies.Count) ||
+                (_inactiveFireFlies.Distinct().Count() != _inactiveFireFlies.Count) ||
+                (_inRoadFireFlies.Distinct().Count() != _inRoadFireFlies.Count))
+                FixFlies();
+        }
+    }
+
+    private void FixFlies()
+    {
+        if (_activeFireFlies.Distinct().Count() != _activeFireFlies.Count)
+        {
+            
+        }
+        if (_activeFireFlies.Distinct().Count() != _activeFireFlies.Count)
+        {
+            
+        }
+        if (_activeFireFlies.Distinct().Count() != _activeFireFlies.Count)
+        {
+            
         }
     }
 

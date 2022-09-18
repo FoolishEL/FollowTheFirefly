@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
@@ -17,6 +16,7 @@ public class MonstersAi : MonoBehaviour
     private List<Vector2> _lightPositions;
     [SerializeField] private float additionalLightAvoidance = 2f;
     [SerializeField] private float maxAdditionalDistance = 6f;
+    public float MaxAdditionalDistance => maxAdditionalDistance;
     [SerializeField] private float timePositionChange = 3f;
 
     [Header("Avoidance settings")] [SerializeField]
@@ -165,7 +165,7 @@ public class MonstersAi : MonoBehaviour
         return position / positions.Count;
     }
     
-#if UNITY_EDITOR &&false
+#if UNITY_EDITOR && false
     private void OnDrawGizmos()
     {
         if(!Application.isPlaying)

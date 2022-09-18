@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Cysharp.Threading.Tasks;
 using Spine.Unity;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -55,6 +54,23 @@ public class EnemyBehaviour : MonoBehaviour
         UpdateLightPositions();
         _idleCoroutine = StartCoroutine(MonsterIdling());
         StartCoroutine(AyeUpdate());
+        StartCoroutine(CheckDistance());
+    }
+
+    private IEnumerator CheckDistance()
+    {
+        WaitForSeconds awaitor = new WaitForSeconds(1f);
+        while (isActiveAndEnabled)
+        {
+            yield return awaitor;
+            if(!isActiveAndEnabled)
+                yield break;
+            if (Vector2.Distance(transform.position, _playerTransform.position) > _monstersAi.MaxAdditionalDistance*1.2f +
+                _lightController.CurrentLightSettings.lightRange)
+            {
+                RequestRespawn();
+            }
+        }
     }
 
     private IEnumerator AyeUpdate()
@@ -87,28 +103,31 @@ public class EnemyBehaviour : MonoBehaviour
         _isMovingToNewPosition = true;
         _idlePosition = position;
         StopCoroutine(_idleCoroutine);
-        MoveToNewIdlePosition(position);
+        StartCoroutine(MoveToNewIdlePosition(position));
     }
 
-    private async UniTask MoveToNewIdlePosition(Vector2 position)
+    private IEnumerator MoveToNewIdlePosition(Vector2 position)
     {
         if (_isKillingMode || _isRespawnRequested)
-            return;
+            yield break;
         Vector2 moveDirection = Vector2.one;
-        while (Vector2.Distance(transform.position, position) > stoppingDistance)
+        moveDirection = position - (Vector2)transform.position;
+        moveDirection = moveDirection.normalized * movementSpeed * Time.deltaTime;
+
+        while (isActiveAndEnabled && Vector2.Distance(transform.position, position) > stoppingDistance)
         {
-            moveDirection = position - (Vector2)transform.position;
-            moveDirection = moveDirection.normalized * movementSpeed * Time.deltaTime;
             if (_lightedPositions.Any(c =>
-                    Vector2.Distance((Vector2)transform.position + moveDirection, c) <
-                    _lightController.CurrentLightSettings.lightRange + 2f))
+                    Vector2.Distance((Vector2)transform.position + moveDirection * 2, c) <
+                    _lightController.CurrentLightSettings.lightRange))
             {
-                await UniTask.Yield();
+                _idlePosition = (Vector2)transform.position - moveDirection * 2f;
                 break;
             }
             transform.position += (Vector3)moveDirection;
-            await UniTask.Yield();
+            yield return null;
         }
+        if (!isActiveAndEnabled)
+            yield break;
         _isMovingToNewPosition = false;
         _idleCoroutine = StartCoroutine(MonsterIdling());
     }
@@ -171,7 +190,6 @@ public class EnemyBehaviour : MonoBehaviour
 
     private IEnumerator MonsterIdling()
     {
-        float timeIdling = 0f;
         while (isActiveAndEnabled)
         {
             yield return null;
@@ -183,16 +201,11 @@ public class EnemyBehaviour : MonoBehaviour
                 Vector2 randomPosition = Random.insideUnitCircle * idleMovementRange;
                 randomPosition += _idlePosition;
                 if (_lightedPositions.Any(c =>
-                        Vector2.Distance(c, randomPosition) < _lightController.CurrentLightSettings.lightRange + 2f))
+                        Vector2.Distance(c, randomPosition) < _lightController.CurrentLightSettings.lightRange))
                 {
-                    if (timeIdling - Time.time > 2f)
-                    {
-                        RequestRespawn();
-                        continue;
-                    }
+                    RequestRespawn();
+                    continue;
                 }
-
-                timeIdling = Time.time;
                 Vector2 moveStep = randomPosition - position2D;
                 moveStep = moveStep.normalized * movementSpeed * Time.deltaTime;
                 while (Vector2.Distance(transform.position, randomPosition) > idleStoppingDistance)
@@ -225,5 +238,6 @@ public class EnemyBehaviour : MonoBehaviour
         UpdateLightPositions();
         _idleCoroutine = StartCoroutine(MonsterIdling());
         StartCoroutine(AyeUpdate());
+        StartCoroutine(CheckDistance());
     }
 }

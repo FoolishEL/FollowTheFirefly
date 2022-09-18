@@ -1304,8 +1304,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerTransform: {fileID: 1800598060}
   lightController: {fileID: 477639697}
-  additionalLightAvoidance: 2.3
+  additionalLightAvoidance: 2
   maxAdditionalDistance: 5
   timePositionChange: 7
-  playerSurroundingMapSize: 41
-  cellsSize: 0.4
+  playerSurroundingMapSize: 31
+  cellsSize: 0.6
