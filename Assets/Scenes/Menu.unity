@@ -815,7 +815,7 @@ MonoBehaviour:
   playerSpeed: 2
   flyToPlayer: 7
   flyFromPlayer: 4
-  monsterTimeReagre: 0.2
+  monsterTimeReagre: 0.4
   mapChangeTime: 30
 --- !u!82 &1975066469
 AudioSource:
