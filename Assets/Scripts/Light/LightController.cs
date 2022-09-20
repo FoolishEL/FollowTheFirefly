@@ -172,7 +172,6 @@ public class LightController : MonoBehaviour
 
     private void FixFlies()
     {
-        Debug.LogError("Fixing bugs!");
         _activeFireFlies.Clear();
         _inactiveFireFlies.Clear();
         _inRoadFireFlies.Clear();

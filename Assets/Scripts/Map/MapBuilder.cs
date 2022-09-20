@@ -151,16 +151,7 @@ public class MapBuilder
                 compasPos = Random.Range(0, roadsWithout.Count);
                 _mapVizual[roadsWithout[compasPos].x, roadsWithout[compasPos].y].Item1.SpawnCompas();
                 isCompasAdded = true;
-#if UNITY_EDITOR
-                Debug.LogError($"Compas spawned at ({roadsWithout[compasPos].x},{roadsWithout[compasPos].y})");
-#endif
             }
-#if UNITY_EDITOR
-            else
-            {
-                Debug.LogError($"No compas(");
-            }
-#endif
         }
         for (int i = 0; i < road.Count - 1; i++)
         {

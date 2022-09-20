@@ -147,7 +147,6 @@ public class MapGenerator : MonoBehaviour
     {
         if (mainRoad.Contains(playerPosition))
         {
-            Debug.LogError("Player is on main road!");
             return;
         }
         int maxLength = -1;

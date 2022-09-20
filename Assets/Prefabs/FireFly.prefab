@@ -185,7 +185,8 @@ MonoBehaviour:
   lightTransform: {fileID: 6759194123086604011}
   fadeTime: 1.2
   stoppingDistance: 0.2
-  speed: 2
+  speedTo: 2
+  speedFrom: 2
   IsPlayerControlled: 0
 --- !u!1 &6759194123784618070
 GameObject:
@@ -241,7 +242,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c41073b55238d451ab406be728e8e47d, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

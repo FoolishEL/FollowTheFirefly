@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -26,7 +25,7 @@ public class HouseVisual : MonoBehaviour
     private async UniTask EndAwaiter()
     {
         GameManager.Instance.isPlaying = false;
-        await UniTask.Delay(TimeSpan.FromSeconds(2f), DelayType.Realtime);
+        await UniTask.Delay(TimeSpan.FromSeconds(2f));
         GameManager.Instance.ToMainMenu();
     }
 }

@@ -8,7 +8,6 @@ public class HouseTrigger : MonoBehaviour
     {
         if (col.TryGetComponent<PlayerMoveController>(out _))
         {
-            Time.timeScale = .2f;
             onWinGame.Invoke();
         }
     }

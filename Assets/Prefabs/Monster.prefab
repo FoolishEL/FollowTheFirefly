@@ -56,7 +56,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ae432de932971574ebb79a487f3b7a7f, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -145,6 +145,7 @@ MonoBehaviour:
   idleAnimation: {fileID: 11400000, guid: a7cbda78eefe44713a18c4841eaa4141, type: 2}
   angryDelay: 0.2
   movementSpeed: 1
+  idleRange: 2
   idleMovementRange: 1
   idleStoppingDistance: 0.05
   withoutLightFollowAwaitTime: 2
