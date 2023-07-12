@@ -295,12 +295,12 @@ public class LightController : MonoBehaviour
         return areasCenters;
     }
 
-    private void AddStaticLight(Transform transform)
+    public void AddStaticLight(Transform transform)
     {
         staticBonusLights.Add(transform);
     }
 
-    private void RemoveStaticLight(Transform transform)
+    public void RemoveStaticLight(Transform transform)
     {
         staticBonusLights.Remove(transform);
     }
