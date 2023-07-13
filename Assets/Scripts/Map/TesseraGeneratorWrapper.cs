@@ -5,6 +5,7 @@ using System.Linq;
 using DeBroglie.Constraints;
 using Tessera;
 using UnityEngine;
+using UnityEngine.Serialization;
 using CountConstraint = Tessera.CountConstraint;
 using PathConstraint = Tessera.PathConstraint;
 using SeparationConstraint = Tessera.SeparationConstraint;
@@ -18,7 +19,7 @@ public class TesseraGeneratorWrapper : MonoBehaviour
     
     [SerializeField] private MonsterSpawner monsterSpawner;
     [SerializeField] private LightController lightController;
-    [SerializeField] private CompasVisual compasVisual;
+    [FormerlySerializedAs("compasVisual")] [SerializeField] private CompassVisual compassVisual;
     
     private bool isFirstTime;
     private StationaryTile entranceTile;
@@ -42,7 +43,7 @@ public class TesseraGeneratorWrapper : MonoBehaviour
         monsterSpawner.SpawnMonsters();
         playerTransform.position = entranceTile.transform.position;
         lightController.AddStaticLight(entranceTile.transform);
-        compasVisual.SetHouse(exitTile.transform);
+        compassVisual.SetHouse(exitTile.transform);
         StartCoroutine(RespawnMaze());
     }
 

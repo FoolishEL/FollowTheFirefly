@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class CompasVisual : MonoBehaviour
+public class CompassVisual : MonoBehaviour
 {
     [SerializeField] private GameObject compas;
     [SerializeField] private Transform arrow;
@@ -12,7 +12,6 @@ public class CompasVisual : MonoBehaviour
     {
         compas.SetActive(false);
         CompasTrigger.onCompasPicked += ShowCompas;
-        TileColliderSetter.onHouseAppear += SetHouse;
     }
 
     public void SetHouse(Transform obj)
@@ -23,7 +22,6 @@ public class CompasVisual : MonoBehaviour
     private void OnDestroy()
     {
         CompasTrigger.onCompasPicked -= ShowCompas;
-        TileColliderSetter.onHouseAppear -= SetHouse;
     }
 
     private void ShowCompas()

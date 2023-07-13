@@ -44,8 +44,6 @@ public class LightController : MonoBehaviour
             _allFlies.Add(fly);
             _inactiveFireFlies.Add(fly);
         }
-        TileColliderSetter.onLightAdded += AddStaticLight;
-        TileColliderSetter.onLightRemoved += RemoveStaticLight;
         EnemyBehaviour.beatedByMonster += TurnOffLights;
     }
 
@@ -76,8 +74,6 @@ public class LightController : MonoBehaviour
 
     private void OnDestroy()
     {
-        TileColliderSetter.onLightAdded -= AddStaticLight;
-        TileColliderSetter.onLightRemoved -= RemoveStaticLight;
         EnemyBehaviour.beatedByMonster -= TurnOffLights;
     }
 

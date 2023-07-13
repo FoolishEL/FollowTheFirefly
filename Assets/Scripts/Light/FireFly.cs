@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using MEG.FL2D;
 using UnityEngine;
 
 public class FireFly : MonoBehaviour
@@ -10,7 +11,9 @@ public class FireFly : MonoBehaviour
     [SerializeField] private float speedTo = 2f;
     [SerializeField] private float speedFrom = 2f;
     [HideInInspector] public bool IsPlayerControlled = false;
+    [SerializeField] private FastLight2D fastLight2D;
 
+    private float maxLightRadius;
     private bool isMooving = false;
     private bool isVisibilityChanging;
     private bool isAppearing = false;
@@ -18,6 +21,7 @@ public class FireFly : MonoBehaviour
 
     private void Awake()
     {
+        maxLightRadius = fastLight2D.Radius;
         isMooving = false;
         isVisibilityChanging = false;
         if (IsPlayerControlled)
@@ -40,6 +44,7 @@ public class FireFly : MonoBehaviour
         for (float time = 0f; time < fadeTime; time += Time.deltaTime)
         {
             lightTransform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, time / fadeTime);
+            fastLight2D.Radius = Mathf.Lerp(0, maxLightRadius, time / fadeTime);
             await UniTask.Yield();
         }
 
@@ -59,6 +64,7 @@ public class FireFly : MonoBehaviour
                 if(isAppearing)
                     return;
                 lightTransform.localScale = Vector3.Lerp(Vector3.one, Vector3.zero, time / fadeTime);
+                fastLight2D.Radius = Mathf.Lerp(maxLightRadius, 0, time / fadeTime);
                 await UniTask.Yield();
             }
 
