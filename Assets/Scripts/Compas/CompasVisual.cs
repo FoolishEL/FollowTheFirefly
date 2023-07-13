@@ -15,7 +15,7 @@ public class CompasVisual : MonoBehaviour
         TileColliderSetter.onHouseAppear += SetHouse;
     }
 
-    private void SetHouse(Transform obj)
+    public void SetHouse(Transform obj)
     {
         exitTransform = obj;
     }

@@ -18,6 +18,8 @@ public class TesseraGeneratorWrapper : MonoBehaviour
     
     [SerializeField] private MonsterSpawner monsterSpawner;
     [SerializeField] private LightController lightController;
+    [SerializeField] private CompasVisual compasVisual;
+    
     private bool isFirstTime;
     private StationaryTile entranceTile;
     private StationaryTile exitTile;
@@ -40,6 +42,7 @@ public class TesseraGeneratorWrapper : MonoBehaviour
         monsterSpawner.SpawnMonsters();
         playerTransform.position = entranceTile.transform.position;
         lightController.AddStaticLight(entranceTile.transform);
+        compasVisual.SetHouse(exitTile.transform);
         StartCoroutine(RespawnMaze());
     }
 
