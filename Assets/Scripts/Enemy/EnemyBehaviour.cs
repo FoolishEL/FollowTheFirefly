@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using CarterGames.Assets.AudioManager;
 using Spine.Unity;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -218,6 +219,10 @@ public class EnemyBehaviour : MonoBehaviour
 
                     Vector2 moveStep = randomPosition - position2D;
                     moveStep = moveStep.normalized * movementSpeed * Time.deltaTime;
+                    if (Vector2.Distance(transform.position, randomPosition) > idleStoppingDistance)
+                    {
+                        PLayMoveSound();
+                    }
                     while (Vector2.Distance(transform.position, randomPosition) > idleStoppingDistance)
                     {
                         transform.position += (Vector3)moveStep;
@@ -251,5 +256,10 @@ public class EnemyBehaviour : MonoBehaviour
         _idleCoroutine = StartCoroutine(MonsterIdling());
         StartCoroutine(AyeUpdate());
         StartCoroutine(CheckDistance());
+    }
+
+    private void PLayMoveSound()
+    {
+        AudioManager.instance.Play($"Scratch{Random.Range(1, 2)}", .7f, Random.Range(.4f, .6f));
     }
 }

@@ -2,9 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using CarterGames.Assets.AudioManager;
 using Cysharp.Threading.Tasks;
 using Spine.Unity;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class LightController : MonoBehaviour
 {
@@ -261,6 +263,7 @@ public class LightController : MonoBehaviour
 
     private IEnumerator PlaceIntoActiveAwaitor(FireFly fireFly)
     {
+        PlayFlySound();
         while (isActiveAndEnabled && fireFly.IsMooving)
         {
             yield return null;
@@ -272,6 +275,7 @@ public class LightController : MonoBehaviour
 
     private IEnumerator PlaceIntoInactiveAwaitor(FireFly fireFly)
     {
+        PlayFlySound();
         while (isActiveAndEnabled&& fireFly.IsMooving)
         {
             yield return null;
@@ -299,6 +303,11 @@ public class LightController : MonoBehaviour
     public void RemoveStaticLight(Transform transform)
     {
         staticBonusLights.Remove(transform);
+    }
+
+    private void PlayFlySound()
+    {
+        AudioManager.instance.Play($"Firefly{Random.Range(1, 6)}", .5f);
     }
 
     [Serializable]

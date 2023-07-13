@@ -1,8 +1,10 @@
 using System;
 using System.Linq;
+using CarterGames.Assets.AudioManager;
 using Spine.Unity;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 public class PlayerMoveController : MonoBehaviour
 {
@@ -33,9 +35,12 @@ public class PlayerMoveController : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private LightController lightController;
     [SerializeField] private Transform cameraTransform;
+    [SerializeField] private float minStepTimeDelay = .05f;
+    private float lastStepTime;
 
     private void Awake()
     {
+        lastStepTime = Time.time;
         rb.gravityScale = 0f;
         _sides = Sides.Down;
         EnemyBehaviour.beatedByMonster += OnBeatByMonster;
@@ -86,6 +91,7 @@ public class PlayerMoveController : MonoBehaviour
         {
             if (CanMoveThisDirection(direction))
             {
+                PlayStepSound();
                 Vector2 directionNormalized = direction;
                 directionNormalized.Normalize();
                 rb.velocity = (rb.velocity + directionNormalized * speed).normalized * speed;
@@ -149,5 +155,14 @@ public class PlayerMoveController : MonoBehaviour
                 c => Vector2.Distance(c, (Vector2)transform.position + targetDirection) < range);
         }
         return canMove;
+    }
+    
+    private void PlayStepSound()
+    {
+        if (Time.time - lastStepTime > minStepTimeDelay)
+        {
+            AudioManager.instance.Play("Step", .4f, Random.Range(0.6f, .8f));
+            lastStepTime = Time.time;
+        }
     }
 }

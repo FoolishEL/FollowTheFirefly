@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19ae0c8eafd7263429865ae0f6fe29e6, type: 3}
+  m_Name: Audio Manager File
+  m_EditorClassIdentifier: 
+  tabPos: 0
+  audioMixer:
+  - {fileID: 0}
+  soundPrefab: {fileID: 322064603624763291, guid: f97cb5ab9dca8bd488116e0ffc057e10, type: 3}
+  isPopulated: 1
+  directory:
+  - Assets/Audio/Sounds/FireFly
+  - Assets/Audio/Sounds/Steps
+  - Assets/Audio/Sounds/Monsters
+  library:
+  - key: Firefly1
+    value: {fileID: 8300000, guid: 6afe442176a79bc458204d241ec7f2ec, type: 3}
+  - key: Firefly2
+    value: {fileID: 8300000, guid: 0cd5b4dff17c43e48847eee4459e3d75, type: 3}
+  - key: Firefly3
+    value: {fileID: 8300000, guid: 8e84ad219add97740ada0f40e324231e, type: 3}
+  - key: Firefly4
+    value: {fileID: 8300000, guid: 468348576153bc34aa7a7fa4553b9829, type: 3}
+  - key: Firefly5
+    value: {fileID: 8300000, guid: 7dbb55a79a40f2f49b963fc86e47d6bd, type: 3}
+  - key: Firefly6
+    value: {fileID: 8300000, guid: 3fa2b86f34d48b748b9acd563c691d3c, type: 3}
+  - key: Step
+    value: {fileID: 8300000, guid: 3ee16b396471648ce9fbf29fb44129a2, type: 3}
+  - key: Scratch
+    value: {fileID: 8300000, guid: 4feaeea39e08d44508419f7b77ee5182, type: 3}
+  - key: Scratch1
+    value: {fileID: 8300000, guid: fd7f7d949c3214ac38ffde47ec274447, type: 3}
+  - key: Scratch2
+    value: {fileID: 8300000, guid: 106dc16b28f4f4ecd9ecb5ebc3b5bf68, type: 3}

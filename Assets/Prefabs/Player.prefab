@@ -164,7 +164,7 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 13
+  m_SortingOrder: 19
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &2938590865552084885
 MonoBehaviour:
@@ -238,6 +238,7 @@ MonoBehaviour:
   rb: {fileID: 2938590865552084881}
   lightController: {fileID: 0}
   cameraTransform: {fileID: 2938590864957729108}
+  minStepTimeDelay: 0.3
 --- !u!50 &2938590865552084881
 Rigidbody2D:
   serializedVersion: 4
