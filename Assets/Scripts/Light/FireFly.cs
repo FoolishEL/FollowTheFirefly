@@ -1,3 +1,4 @@
+using System;
 using Cysharp.Threading.Tasks;
 using MEG.FL2D;
 using UnityEngine;
@@ -63,8 +64,12 @@ public class FireFly : MonoBehaviour
             {
                 if(isAppearing)
                     return;
-                lightTransform.localScale = Vector3.Lerp(Vector3.one, Vector3.zero, time / fadeTime);
-                fastLight2D.Radius = Mathf.Lerp(maxLightRadius, 0, time / fadeTime);
+                try
+                {
+                    lightTransform.localScale = Vector3.Lerp(Vector3.one, Vector3.zero, time / fadeTime);
+                    fastLight2D.Radius = Mathf.Lerp(maxLightRadius, 0, time / fadeTime);
+                }
+                catch{return;}
                 await UniTask.Yield();
             }
 

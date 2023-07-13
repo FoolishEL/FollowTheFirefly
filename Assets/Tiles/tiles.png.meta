@@ -43,7 +43,7 @@ TextureImporter:
   lightmap: 0
   compressionQuality: 50
   spriteMode: 2
-  spriteExtrude: 1
+  spriteExtrude: 0
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
@@ -246,8 +246,8 @@ TextureImporter:
       name: Road_LeftRight
       rect:
         serializedVersion: 2
-        x: 810
-        y: 540
+        x: 809
+        y: 2
         width: 270
         height: 270
       alignment: 0
@@ -330,8 +330,8 @@ TextureImporter:
       name: Road_TopBottom
       rect:
         serializedVersion: 2
-        x: 270
-        y: 0
+        x: 810
+        y: 374
         width: 270
         height: 270
       alignment: 0
@@ -352,7 +352,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 810
-        y: 0
+        y: 810
         width: 270
         height: 270
       alignment: 0
