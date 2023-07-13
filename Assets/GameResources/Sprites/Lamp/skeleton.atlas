@@ -1,0 +1,15 @@
+skeleton.png
+	size: 64, 32
+	filter: Linear, Linear
+	pma: true
+lamp-02
+	bounds: 29, 2, 5, 4
+	rotate: 90
+lamp-03
+	bounds: 2, 9, 21, 38
+	rotate: 90
+lamp-04
+	bounds: 2, 5, 2, 18
+	rotate: 90
+lamp_Монтажная область 1
+	bounds: 22, 2, 5, 5

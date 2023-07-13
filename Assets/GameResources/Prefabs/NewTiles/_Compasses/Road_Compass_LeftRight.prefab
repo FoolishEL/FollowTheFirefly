@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &3773898547371640432
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8707330622372943800, guid: 99793dbdfb934473da5eae1b8fb05b55, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8707330622372943800, guid: 99793dbdfb934473da5eae1b8fb05b55, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8707330622372943800, guid: 99793dbdfb934473da5eae1b8fb05b55, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8707330622372943800, guid: 99793dbdfb934473da5eae1b8fb05b55, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8707330622372943800, guid: 99793dbdfb934473da5eae1b8fb05b55, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8707330622372943800, guid: 99793dbdfb934473da5eae1b8fb05b55, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8707330622372943800, guid: 99793dbdfb934473da5eae1b8fb05b55, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8707330622372943800, guid: 99793dbdfb934473da5eae1b8fb05b55, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8707330622372943800, guid: 99793dbdfb934473da5eae1b8fb05b55, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8707330622372943800, guid: 99793dbdfb934473da5eae1b8fb05b55, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8707330622372943800, guid: 99793dbdfb934473da5eae1b8fb05b55, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8707330622372943801, guid: 99793dbdfb934473da5eae1b8fb05b55, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 430316468, guid: c0975034acf95c946a4d879d43937df4, type: 3}
+    - target: {fileID: 8707330622372943806, guid: 99793dbdfb934473da5eae1b8fb05b55, type: 3}
+      propertyPath: faceDetails.Array.data[2].faceDetails.center
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8707330622372943806, guid: 99793dbdfb934473da5eae1b8fb05b55, type: 3}
+      propertyPath: faceDetails.Array.data[3].faceDetails.center
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8707330622372943807, guid: 99793dbdfb934473da5eae1b8fb05b55, type: 3}
+      propertyPath: m_Name
+      value: Road_Compass_LeftRight
+      objectReference: {fileID: 0}
+    - target: {fileID: 9000856422731989034, guid: 99793dbdfb934473da5eae1b8fb05b55, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9121826162081589406, guid: 99793dbdfb934473da5eae1b8fb05b55, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 99793dbdfb934473da5eae1b8fb05b55, type: 3}

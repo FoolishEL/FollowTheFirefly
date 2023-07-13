@@ -1,0 +1,8 @@
+skeleton.png
+	size: 16, 16
+	filter: Linear, Linear
+	pma: true
+lamp-02
+	bounds: 2, 2, 5, 4
+lamp_Монтажная область 1
+	bounds: 2, 8, 5, 5

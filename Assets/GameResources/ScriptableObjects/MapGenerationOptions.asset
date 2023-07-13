@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0df36180328e44a579aec250dadcd742, type: 3}
+  m_Name: MapGenerationOptions
+  m_EditorClassIdentifier: 
+  Size: {x: 11, y: 11}
+  RegenerationTime: 10
+  roads:
+  - Weight: 1
+    tileBases:
+    - {fileID: 5887028780163320324, guid: 94bcc1cc5a10148cd87fa39d5acb6119, type: 3}
+  - Weight: 2
+    tileBases:
+    - {fileID: 5872400442732128040, guid: b21e5a3315a924190abaceac102b37a9, type: 3}
+    - {fileID: 7980539723725427545, guid: 31db34a0a41614bee8fadb57885cfb3c, type: 3}
+    - {fileID: 2414030163083739890, guid: 321d5e54637844df38e15bf91a1a6b2e, type: 3}
+    - {fileID: 1610913263342860379, guid: 6b1540c0c10534d749e31aa14209ab26, type: 3}
+  - Weight: 3
+    tileBases:
+    - {fileID: 4026665931400158458, guid: b7a597b59eeb3422da05c756a855eb6f, type: 3}
+    - {fileID: 8196211985271880897, guid: fabf22e9b9bf947f88cc25cfbb72e34e, type: 3}
+    - {fileID: 3832827955743107195, guid: 2a6c05234b77941aea085495e7894599, type: 3}
+    - {fileID: 2554610661836703405, guid: 411d80586647541a6923bc33f14ca6aa, type: 3}
+  - Weight: 4
+    tileBases:
+    - {fileID: 4479169648902986071, guid: 422725b542c3e4f1aa42059723eb9b34, type: 3}
+    - {fileID: 2832117804326744831, guid: bb84bfddac507457384aab74565bfdb5, type: 3}
+  - Weight: 10
+    tileBases:
+    - {fileID: 8707330622372943806, guid: 690596c3a699d4c71a8cb17b497963ac, type: 3}
+  entrances:
+    Weight: 1
+    tileBases:
+    - {fileID: 8707330622372943806, guid: 488edf7be55e74e92810fe64fce3cce8, type: 3}
+    - {fileID: 840829495983525739, guid: 6938d51fd96ea4b96b5c28b4644c4e87, type: 3}
+    - {fileID: 840829495983525739, guid: ef5247373338045e9a7b22ef498391bd, type: 3}
+    - {fileID: 840829495983525739, guid: 7027e87240a4e4e72ab791dd85390723, type: 3}
+    - {fileID: 840829495983525739, guid: ceff963c3e7c04f75add150f044bfc6b, type: 3}
+    - {fileID: 840829495983525739, guid: 59d33eafddd094724aa8f21aaebe1778, type: 3}
+    - {fileID: 840829495983525739, guid: 4aaae50310ae143daa00bd5deab4fadc, type: 3}
+    - {fileID: 840829495983525739, guid: f6f4fee3eea764a7ea04425a522e12d7, type: 3}
+    - {fileID: 840829495983525739, guid: 4e6b2b350dc794250b50b036340f588e, type: 3}
+    - {fileID: 840829495983525739, guid: abf66e743a06641108d79858e1799b5e, type: 3}
+    - {fileID: 840829495983525739, guid: caea27920aa20414f946f6db63cb02bd, type: 3}
+  exits:
+    Weight: 1
+    tileBases:
+    - {fileID: 8707330622372943806, guid: 8b8cf96ceb9bd47b3bdb378bed5f27ee, type: 3}
+    - {fileID: 4008936699289689946, guid: cc2e72edb22d04705b8bf596ba0eec09, type: 3}
+    - {fileID: 4008936699289689946, guid: 12d1999f6d3f54546b7bd2f1d3f18bc5, type: 3}
+    - {fileID: 4008936699289689946, guid: 81c1a1d8cad8a469fa8ed5d36635deff, type: 3}
+    - {fileID: 4008936699289689946, guid: 6a5004997d1684ea28b1446ba98a4e23, type: 3}
+    - {fileID: 4008936699289689946, guid: d75ed0b1ec1474bcb963811d76d1cda8, type: 3}
+    - {fileID: 4008936699289689946, guid: d4acd302873a5447d929214e316e7cf4, type: 3}
+    - {fileID: 4008936699289689946, guid: 266ebccc3129f448b944a966b3c0fea9, type: 3}
+    - {fileID: 4008936699289689946, guid: 3ede917ae0b7b4b28a1c98508f368d89, type: 3}
+    - {fileID: 4008936699289689946, guid: 80d779c51f55649d6a990a6bd35e1710, type: 3}
+    - {fileID: 4008936699289689946, guid: 01c3d26894afc46c0b8ade42d37343aa, type: 3}
+  compasses:
+    Weight: 1
+    tileBases:
+    - {fileID: 8707330622372943806, guid: 99793dbdfb934473da5eae1b8fb05b55, type: 3}
+    - {fileID: 5514996026313314766, guid: 2db2fb6ef0e5843fb9a360d8902459c7, type: 3}
+    - {fileID: 5514996026313314766, guid: c7ab13622f23148a5a66ea537b7d9f29, type: 3}
+    - {fileID: 5514996026313314766, guid: 75e16204371ae4cfa9ee858e7ad86ac1, type: 3}
+    - {fileID: 5514996026313314766, guid: 52fd7af15462a4c6da2f64a7c9f35e95, type: 3}
+    - {fileID: 5514996026313314766, guid: 0e6f3bedd334246a4bb6c67da050e2d0, type: 3}
+    - {fileID: 5514996026313314766, guid: 6aaa27ab94bbe40ff9a18bfdf98fab34, type: 3}
+    - {fileID: 5514996026313314766, guid: 89cb891802a7f488fbf271d4937ae56a, type: 3}
+    - {fileID: 5514996026313314766, guid: ce512994093ce4bf89803844144f74ab, type: 3}
+    - {fileID: 5514996026313314766, guid: a8408d42662444247943fcf08d734030, type: 3}
+    - {fileID: 5514996026313314766, guid: 091cfa284ecf444bba1d4aa07f2dd716, type: 3}
+  MinimalDistanceToExit: 10
