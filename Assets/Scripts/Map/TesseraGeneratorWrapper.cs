@@ -54,6 +54,7 @@ public class TesseraGeneratorWrapper : MonoBehaviour
         if(isFirstTime)
             return;
         var areas = lightController.GetWalkableArea(out var range);
+        range *= 2f;
         var notLightened = lightenedTiles.Where(wasLightened =>
             areas.All(lightPoint => Vector2.Distance(lightPoint, wasLightened.transform.position) > range)).ToList();
         lightenedTiles.RemoveAll(c => notLightened.Contains(c));

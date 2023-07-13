@@ -7,6 +7,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4946568065614234160, guid: 99793dbdfb934473da5eae1b8fb05b55, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8707330622372943800, guid: 99793dbdfb934473da5eae1b8fb05b55, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -66,6 +70,10 @@ PrefabInstance:
     - target: {fileID: 8707330622372943807, guid: 99793dbdfb934473da5eae1b8fb05b55, type: 3}
       propertyPath: m_Name
       value: Road_Compass_LeftTop
+      objectReference: {fileID: 0}
+    - target: {fileID: 9000856422731989034, guid: 99793dbdfb934473da5eae1b8fb05b55, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 99793dbdfb934473da5eae1b8fb05b55, type: 3}

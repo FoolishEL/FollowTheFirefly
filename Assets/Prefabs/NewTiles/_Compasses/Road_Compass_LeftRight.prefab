@@ -67,5 +67,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: Road_Compass_LeftRight
       objectReference: {fileID: 0}
+    - target: {fileID: 9000856422731989034, guid: 99793dbdfb934473da5eae1b8fb05b55, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9121826162081589406, guid: 99793dbdfb934473da5eae1b8fb05b55, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 99793dbdfb934473da5eae1b8fb05b55, type: 3}

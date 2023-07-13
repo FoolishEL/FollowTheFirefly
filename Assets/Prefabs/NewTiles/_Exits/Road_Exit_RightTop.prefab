@@ -7,6 +7,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1158063531609518048, guid: 8b8cf96ceb9bd47b3bdb378bed5f27ee, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1907655891783071443, guid: 8b8cf96ceb9bd47b3bdb378bed5f27ee, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3061942968211501285, guid: 8b8cf96ceb9bd47b3bdb378bed5f27ee, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4373717143969577600, guid: 8b8cf96ceb9bd47b3bdb378bed5f27ee, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.458
@@ -14,6 +26,22 @@ PrefabInstance:
     - target: {fileID: 4373717143969577600, guid: 8b8cf96ceb9bd47b3bdb378bed5f27ee, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0.757
+      objectReference: {fileID: 0}
+    - target: {fileID: 5630603032117023513, guid: 8b8cf96ceb9bd47b3bdb378bed5f27ee, type: 3}
+      propertyPath: m_Size.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6472653823761117588, guid: 8b8cf96ceb9bd47b3bdb378bed5f27ee, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6603369636454939984, guid: 8b8cf96ceb9bd47b3bdb378bed5f27ee, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6717899176436355503, guid: 8b8cf96ceb9bd47b3bdb378bed5f27ee, type: 3}
+      propertyPath: m_Size.y
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8707330622372943800, guid: 8b8cf96ceb9bd47b3bdb378bed5f27ee, type: 3}
       propertyPath: m_RootOrder
@@ -77,7 +105,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8707330622372943807, guid: 8b8cf96ceb9bd47b3bdb378bed5f27ee, type: 3}
       propertyPath: m_Name
-      value: Road_Exit_LeftTop
+      value: Road_Exit_RightTop
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8b8cf96ceb9bd47b3bdb378bed5f27ee, type: 3}
