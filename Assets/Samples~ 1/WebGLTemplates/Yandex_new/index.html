@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>{{{ PRODUCT_NAME }}}</title>
+	<link rel="icon" type="image/png" sizes="256x256" href="TemplateData/favicon.png">
+    <link rel="stylesheet" href="TemplateData/style.css">
+  </head>
+  <body class="{{{ SPLASH_SCREEN_STYLE.toLowerCase() }}}">
+    <div id="unity-container" class="unity-desktop">
+      <canvas id="unity-canvas"></canvas>
+    </div>
+    <div id="loading-cover" style="display:none;">
+      <div id="unity-loading-bar">
+        <div id="unity-logo"><img src="logo.png"></div>
+        <div id="unity-progress-bar-empty" style="display: none;">
+          <div id="unity-progress-bar-full"></div>
+        </div>
+        <div class="spinner"></div>
+      </div>
+    </div>
+    <div id="unity-fullscreen-button" style="display: none;"></div>
+    <script>
+      const hideFullScreenButton = "{{{ HIDE_FULL_SCREEN_BUTTON }}}";
+      const buildUrl = "Build";
+      const loaderUrl = buildUrl + "/{{{ LOADER_FILENAME }}}";
+      const config = {
+        dataUrl: buildUrl + "/{{{ DATA_FILENAME }}}",
+        frameworkUrl: buildUrl + "/{{{ FRAMEWORK_FILENAME }}}",
+        codeUrl: buildUrl + "/{{{ CODE_FILENAME }}}",
+#if MEMORY_FILENAME
+        memoryUrl: buildUrl + "/{{{ MEMORY_FILENAME }}}",
+#endif
+#if SYMBOLS_FILENAME
+        symbolsUrl: buildUrl + "/{{{ SYMBOLS_FILENAME }}}",
+#endif
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "{{{ COMPANY_NAME }}}",
+        productName: "{{{ PRODUCT_NAME }}}",
+        productVersion: "{{{ PRODUCT_VERSION }}}",
+      };
+
+      const container = document.querySelector("#unity-container");
+      const canvas = document.querySelector("#unity-canvas");
+      const loadingCover = document.querySelector("#loading-cover");
+      const progressBarEmpty = document.querySelector("#unity-progress-bar-empty");
+      const progressBarFull = document.querySelector("#unity-progress-bar-full");
+      const fullscreenButton = document.querySelector("#unity-fullscreen-button");
+      const spinner = document.querySelector('.spinner');
+
+      const canFullscreen = (function() {
+        for (const key of [
+            'exitFullscreen',
+            'webkitExitFullscreen',
+            'webkitCancelFullScreen',
+            'mozCancelFullScreen',
+            'msExitFullscreen',
+          ]) {
+          if (key in document) {
+            return true;
+          }
+        }
+        return false;
+      }());
+
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        container.className = "unity-mobile";
+        config.devicePixelRatio = 1;
+      }
+#if BACKGROUND_FILENAME
+      canvas.style.background = "url('" + buildUrl + "/{{{ BACKGROUND_FILENAME.replace(/'/g, '%27') }}}') center / cover";
+#endif
+      loadingCover.style.display = "";
+	  
+      var sdk;
+      var player = null;
+      var payments = null;
+	  var newInstance = null;
+
+      const script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+          spinner.style.display = "none";
+          progressBarEmpty.style.display = "";
+          progressBarFull.style.width = `${100 * progress}%`;
+        }).then((unityInstance) => {
+		
+		  newInstance = unityInstance;
+          loadingCover.style.display = "none";
+          if (canFullscreen) {
+            if (!hideFullScreenButton) {
+              fullscreenButton.style.display = "";
+            }
+            fullscreenButton.onclick = () => {
+              unityInstance.SetFullscreen(1);
+            };
+          }
+        }).catch((message) => {
+          alert(message);
+        });
+      };
+	  
+	  /* Yandex Games SDK */
+	  
+      function getEnvironment(){
+		try {
+			let envDt = sdk.environment;
+			newInstance.SendMessage('YandexSDK', 'Callback_Environment', JSON.stringify(envDt));
+		} catch (err) {
+		}
+	  }
+	  
+      function setToClipboard(ctext){
+		try {
+			let text = ctext + "";
+			sdk.clipboard.writeText(text)
+				.then(() => {
+				
+				})
+				.catch((err) => {
+				
+				});
+		} catch (err) {
+		}
+	  }
+	
+	  function auth(){
+		  sdk.auth.openAuthDialog().then(() => {
+                initPlayer();
+				location.reload();
+				window.location.reload();
+            }).catch(() => {
+			
+            });
+      }
+
+      function initPlayer(){
+        if (player == null) {
+          sdk.getPlayer().then(_player => {
+            if (typeof _player !== 'undefined') {
+              if (_player !== null) {
+                player = _player; 
+                return true;
+              }
+              return false;
+            }     
+          }).catch(err => {
+            // USER_NOT_AUTHORIZED.
+			
+          });
+          return false;
+        }
+        return true;
+      }
+	  
+	  function setGameData(_data){
+        if(initPlayer() === true){
+		  player.setData({"data" : _data}, true).then(()=>{
+		  }).catch(()=>{
+		  
+		  });
+		}
+	  }
+	  
+	  function initYaSDK() {
+	    YaGames.init()
+        .then(ysdk => {
+            sdk = ysdk;
+            initPlayer();
+            newInstance.SendMessage('YandexSDK', 'Callback_InitYaSDK');
+	    });
+	  }
+
+      function getUniqueID(){
+        if(initPlayer() === true){
+          let data = player.getUniqueID();
+          newInstance.SendMessage('YandexSDK', 'Callback_UniqueID', data);
+        }
+      }
+
+      function getUserData(){
+        if(initPlayer() === true){
+          let data = {"id" : player.getUniqueID(), "name" : player.getName(), "avatarUrlSmall" : player.getPhoto('small'), "avatarUrlMedium" : player.getPhoto('medium'), "avatarUrlLarge" : player.getPhoto('large')};
+          newInstance.SendMessage('YandexSDK', 'Callback_StoreUserData', JSON.stringify(data));
+        }
+      }
+	  
+	  function getGameData(){
+      if(initPlayer() === true){
+		let _keys = ["data"];
+        player.getData(_keys).then(_data =>{
+		  let _save = _data["data"];
+          newInstance.SendMessage('YandexSDK', 'Callback_GameUserData', _save);
+        });
+      }
+	  }
+
+      function showFullscrenAd(){
+        sdk.adv.showFullscreenAdv({
+          callbacks: {
+            onClose: function(wasShown) {
+              newInstance.SendMessage('YandexSDK', 'Callback_OnInterstitialShown');
+            },
+            onError: function(error) {
+              newInstance.SendMessage('YandexSDK', 'Callback_OnInterstitialError', error);
+            }
+          }
+        })
+      }
+
+      function showRewardedAd(id){
+        sdk.adv.showRewardedVideo({
+        callbacks: {
+            onClose: () => {
+                newInstance.SendMessage('YandexSDK', 'Callback_OnRewardedClose', id);
+            }, 
+			onOpen: () => {
+                newInstance.SendMessage('YandexSDK', 'Callback_OnRewardedOpen', id);
+			},
+            onRewarded: () => {
+                newInstance.SendMessage('YandexSDK', 'Callback_OnRewarded', id);
+            },
+            onError: (e) => {
+                var data = {"id" : id, "error" : e};
+                newInstance.SendMessage('YandexSDK', 'Callback_OnRewardedError', JSON.stringify(data));
+            }
+          }
+        })
+      }
+
+      function initPayments(){
+        sdk.getPayments().then(_payments => {
+          // Покупки доступны.
+          payments = _payments;
+        }).catch(err => {
+        })
+      }
+
+      function buy(id){
+        payments.purchase(id).then(purchase => {
+          newInstance.SendMessage('YandexSDK', 'Callback_OnPurchaseSuccess', id);
+        }).catch(err => {
+          newInstance.SendMessage('YandexSDK', 'Callback_OnPurchaseFailed', err);
+        })
+      }
+
+      window.onbeforeunload = function(e) {
+        gameInstance.SendMessage("YandexSDK", "Callback_OnClose");
+    
+        var dialogText = "You game has been saved!  Would you like to continue unloading the page?";
+        e.returnValue = dialogText;
+        return dialogText;
+      };
+	  
+      (function(d) {
+        var t = d.getElementsByTagName('script')[0];
+        var s = d.createElement('script');
+        s.src = 'https://yandex.ru/games/sdk/v2';
+        s.async = true;
+        t.parentNode.insertBefore(s, t);
+        s.onload = initYaSDK;
+      })(document);
+	  
+      document.body.appendChild(script);
+    </script>
+  </body>
+</html>
