@@ -7,6 +7,13 @@
       "dependencies": {},
       "hash": "f48cb4b03e6214d9a02cedfda6f26635dad001fb"
     },
+    "com.k0fe.yandexgamessdk": {
+      "version": "https://github.com/k0leso/yandex-games-plugin-unity.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "a83b2aa014fbb33014adb119d76a81b6f8476f3f"
+    },
     "com.unity.2d.animation": {
       "version": "7.0.8",
       "depth": 1,
