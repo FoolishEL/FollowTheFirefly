@@ -12,11 +12,12 @@ namespace CrashKonijn.Goap.Editor.TypeDrawers
     [CustomEditor(typeof(AgentBehaviour))]
     public class AgentEditor : UnityEditor.Editor
     {
+        public StyleSheet styleSheet;
         public override VisualElement CreateInspectorGUI()
         {
             var root = new VisualElement();
-            
-            root.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>($"{GoapEditorSettings.BasePath}/Styles/Generic.uss"));
+
+            root.styleSheets.Add(styleSheet);
             
             root.Add(new PropertyField(this.serializedObject.FindProperty("goapSetBehaviour")));
             root.Add(new PropertyField(this.serializedObject.FindProperty("<DistanceMultiplier>k__BackingField")));

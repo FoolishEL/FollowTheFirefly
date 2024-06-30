@@ -13,56 +13,56 @@ namespace Demos.Shared.Behaviours
 
         private void Awake()
         {
-            this.agent = this.GetComponent<AgentBehaviour>();
+            agent = GetComponent<AgentBehaviour>();
         }
 
         private void OnEnable()
         {
-            this.agent.Events.OnTargetInRange += this.OnTargetInRange;
-            this.agent.Events.OnTargetChanged += this.OnTargetChanged;
-            this.agent.Events.OnTargetOutOfRange += this.OnTargetOutOfRange;
+            agent.Events.OnTargetInRange += OnTargetInRange;
+            agent.Events.OnTargetChanged += OnTargetChanged;
+            agent.Events.OnTargetOutOfRange += OnTargetOutOfRange;
         }
 
         private void OnDisable()
         {
-            this.agent.Events.OnTargetInRange -= this.OnTargetInRange;
-            this.agent.Events.OnTargetChanged -= this.OnTargetChanged;
-            this.agent.Events.OnTargetOutOfRange -= this.OnTargetOutOfRange;
+            agent.Events.OnTargetInRange -= OnTargetInRange;
+            agent.Events.OnTargetChanged -= OnTargetChanged;
+            agent.Events.OnTargetOutOfRange -= OnTargetOutOfRange;
         }
 
         private void OnTargetInRange(ITarget target)
         {
-            this.shouldMove = false;
+            shouldMove = false;
         }
 
         private void OnTargetChanged(ITarget target, bool inRange)
         {
-            this.currentTarget = target;
-            this.shouldMove = !inRange;
+            currentTarget = target;
+            shouldMove = !inRange;
         }
 
         private void OnTargetOutOfRange(ITarget target)
         {
-            this.shouldMove = true;
+            shouldMove = true;
         }
 
         public void Update()
         {
-            if (!this.shouldMove)
+            if (!shouldMove)
                 return;
             
-            if (this.currentTarget == null)
+            if (currentTarget == null)
                 return;
             
-            this.transform.position = Vector3.MoveTowards(this.transform.position, new Vector3(this.currentTarget.Position.x, this.transform.position.y, this.currentTarget.Position.z), Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, new Vector3(currentTarget.Position.x, transform.position.y, currentTarget.Position.z), Time.deltaTime);
         }
 
         private void OnDrawGizmos()
         {
-            if (this.currentTarget == null)
+            if (currentTarget == null)
                 return;
             
-            Gizmos.DrawLine(this.transform.position, this.currentTarget.Position);
+            Gizmos.DrawLine(transform.position, currentTarget.Position);
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using CrashKonijn.Goap.Behaviours;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -14,9 +13,9 @@ namespace Demos.Simple.Behaviours
         public GameObject agentPrefab;
         public GoapSetBehaviour goapSet;
         
-        public TextMeshProUGUI appleCountText;
-        public TextMeshProUGUI agentCountText;
-        public TextMeshProUGUI fpsText;
+        public Text appleCountText;
+        public Text agentCountText;
+        public Text fpsText;
         public Toggle debugToggle;
 
         private bool debug = true;

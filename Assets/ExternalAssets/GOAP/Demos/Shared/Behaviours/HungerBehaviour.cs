@@ -8,13 +8,13 @@ namespace Demos.Shared.Behaviours
 
         private void Awake()
         {
-            this.hunger = Random.Range(0, 100f);
+            hunger = Random.Range(0, 100f);
             // this.hunger = 80f;
         }
 
         private void FixedUpdate()
         {
-            this.hunger += Time.fixedDeltaTime * 2f;
+            hunger += Time.fixedDeltaTime * 2f;
         }
     }
 }

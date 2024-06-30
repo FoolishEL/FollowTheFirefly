@@ -1,35 +1,35 @@
 ﻿using CrashKonijn.Goap.Behaviours;
 using CrashKonijn.Goap.Classes.Validators;
 using Demos.Shared.Behaviours;
-using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Demos.Simple.Behaviours
 {
     public class TextBehaviour : MonoBehaviour
     {
-        private TextMeshProUGUI text;
+        private Text text;
         private AgentBehaviour agent;
         private HungerBehaviour hunger;
 
         private void Awake()
         {
-            this.text = this.GetComponentInChildren<TextMeshProUGUI>();
-            this.agent = this.GetComponent<AgentBehaviour>();
-            this.hunger = this.GetComponent<HungerBehaviour>();
+            text = GetComponentInChildren<Text>();
+            agent = GetComponent<AgentBehaviour>();
+            hunger = GetComponent<HungerBehaviour>();
         }
 
         private void Update()
         {
-            this.text.text = this.GetText();
+            text.text = GetText();
         }
 
         private string GetText()
         {
-            if (this.agent.CurrentAction is null)
+            if (agent.CurrentAction is null)
                 return "Idle";
 
-            return $"{this.agent.CurrentGoal.GetType().GetGenericTypeName()}\n{this.agent.CurrentAction.GetType().GetGenericTypeName()}\n{this.agent.State}\nhunger: {this.hunger.hunger:0.00}";
+            return $"{agent.CurrentGoal.GetType().GetGenericTypeName()}\n{agent.CurrentAction.GetType().GetGenericTypeName()}\n{agent.State}\nhunger: {hunger.hunger:0.00}";
         }
     }
 }

@@ -1,3 +1,12 @@
-﻿fileFormatVersion: 2
+fileFormatVersion: 2
 guid: 31d51232e6d94cdcadcb2e4067408d3b
-timeCreated: 1677670820
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - genericSpriteSheet: {fileID: 7433441132597879392, guid: 4567cab6536f457eba19c2e3e91b68fe, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

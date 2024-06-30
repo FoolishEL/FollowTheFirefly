@@ -12,6 +12,11 @@ namespace CrashKonijn.Goap.Editor.NodeViewer
 {
     public class NodeViewerEditorWindow : EditorWindow
     {
+        public StyleSheet genericSpriteSheet;
+        public StyleSheet nodeViewerSpriteSheet;
+#if UNITY_2022_1_OR_NEWER
+        public StyleSheet nodeViewerSpriteSheet2;
+#endif
         private IGoapRunner runner;
         private IGoapSet goapSet;
         private AgentBehaviour agent;
@@ -78,11 +83,11 @@ namespace CrashKonijn.Goap.Editor.NodeViewer
             var root = this.rootVisualElement;
             root.name = "node-viewer-editor";
             
-            root.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>($"{GoapEditorSettings.BasePath}/Styles/Generic.uss"));
-            root.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>($"{GoapEditorSettings.BasePath}/Styles/NodeViewer.uss"));
+            root.styleSheets.Add(genericSpriteSheet);
+            root.styleSheets.Add(nodeViewerSpriteSheet);
             
 #if UNITY_2022_1_OR_NEWER
-            root.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>($"{GoapEditorSettings.BasePath}/Styles/NodeViewer_2022.uss"));
+            root.styleSheets.Add(nodeViewerSpriteSheet2);
             this.dragDrawer = new DragDrawer(right, (offset) =>
             {
                 dragParent.transform.position = offset;

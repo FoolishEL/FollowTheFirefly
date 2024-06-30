@@ -12,12 +12,13 @@ namespace CrashKonijn.Goap.Editor.TypeDrawers
     [CustomEditor(typeof(GoapRunnerBehaviour))]
     public class GoapRunnerEditor : UnityEditor.Editor
     {
+        public StyleSheet styleSheet;
         public override VisualElement CreateInspectorGUI()
         {
             var runner = (GoapRunnerBehaviour) this.target;
             var root = new VisualElement();
             
-            root.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>($"{GoapEditorSettings.BasePath}/Styles/Generic.uss"));
+            root.styleSheets.Add(styleSheet);
 
             root.Add(new PropertyField(this.serializedObject.FindProperty("configInitializer")));
             

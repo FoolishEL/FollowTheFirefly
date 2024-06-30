@@ -13,6 +13,7 @@ namespace CrashKonijn.Goap.Editor.TypeDrawers
     [CustomEditor(typeof(GoapSetConfigScriptable))]
     public class GoapSetConfigEditor : UnityEditor.Editor
     {
+        public StyleSheet genericSpriteSheet;
         private GoapSetConfigScriptable config;
         
         public override VisualElement CreateInspectorGUI()
@@ -21,8 +22,7 @@ namespace CrashKonijn.Goap.Editor.TypeDrawers
             
             var root = new VisualElement();
             
-            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>($"{GoapEditorSettings.BasePath}/Styles/Generic.uss");
-            root.styleSheets.Add(styleSheet);
+            root.styleSheets.Add(genericSpriteSheet);
             
             root.Add(this.Group("Debugger", card =>
             {
